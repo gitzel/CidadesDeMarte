@@ -55,6 +55,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="IGravarEmArquivo.cs" />
+    <Compile Include="IStack.cs" />
+    <Compile Include="ListaSimples.cs" />
+    <Compile Include="NoLista.cs" />
+    <Compile Include="PilhaLista.cs" />
+    <Compile Include="PilhaVaziaException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

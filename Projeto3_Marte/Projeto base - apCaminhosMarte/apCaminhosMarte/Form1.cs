@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,24 @@ namespace apCaminhosMarte
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Buscar caminhos entre cidades selecionadas");
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if(dlgArquivo.ShowDialog() == DialogResult.OK)
+            {
+                StreamReader arq = new StreamReader(dlgArquivo.FileName);
+                LerArquivo(arq);
+            }
+        }
+
+        private void LerArquivo(StreamReader arquivo)
+        {
+            while(!arquivo.EndOfStream)
+            {
+                break;
+            }
+            arquivo.Close();
         }
     }
 }

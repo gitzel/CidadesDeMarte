@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,7 +62,7 @@ namespace apCaminhosMarte
             else
             {
                 var novoNo = new NoArvore<Dado>(incluido);
-               
+
                 if (incluido.CompareTo(antecessor.Info) < 0)
                     antecessor.Esq = novoNo;
                 else
@@ -69,7 +70,7 @@ namespace apCaminhosMarte
                 quantosNos++;
             }
         }
-        
+
         private int QtosNos(NoArvore<Dado> noAtual)
         {
             if (noAtual == null)
@@ -91,8 +92,8 @@ namespace apCaminhosMarte
                    QtasFolhas(noAtual.Dir);  // conta folhas da subárvore direita
         }
         public int QuantasFolhas { get => this.QtasFolhas(this.Raiz); }
-        
-        
+
+
 
         // Exercício 5 – Altura de uma árvore binária
         private int Altura(NoArvore<Dado> noAtual)
@@ -116,5 +117,37 @@ namespace apCaminhosMarte
             return Altura(Raiz);
         }
 
+        private void DesenharArvore(bool primeiro, NoArvore<Dado> atual, int x, int y, double angulo, double i, double compr, Graphics g)
+        {
+            int xf, yf;
+
+            if (atual != null)
+            {
+                Pen caneta = new Pen(Color.FromArgb(39, 60, 117));
+
+                xf = (int)Math.Round(x + Math.Cos(angulo) * compr);
+                yf = (int)Math.Round(y + Math.Sin(angulo) * compr);
+
+                if (primeiro)
+                    yf = 25;
+
+                g.DrawLine(caneta, x, y, xf, yf);
+
+                DesenharArvore(false, atual.Esq, xf, yf, Math.PI / 2 + i,
+                                                 i * 0.5, compr * 0.8, g);
+                DesenharArvore(false, atual.Dir, xf, yf, Math.PI / 2 - i,
+                                                  i * 0.5, compr * 0.8, g);
+
+                SolidBrush preenchimento = new SolidBrush(Color.FromArgb(32, 32, 32));
+                g.FillRectangle(preenchimento, xf - 15, yf - 15, 40, 40);
+                g.DrawString(atual.Info.ToString(), new Font("Courier New", 12),
+                              new SolidBrush(Color.FromArgb(232, 65, 24)), xf - 7, yf - 5);
+            }
+        }
+
+        public void DesenharArvore(Graphics g, int tamanho)
+        {
+            DesenharArvore(true, raiz, tamanho, 0, Math.PI / 2, Math.PI / 2.5, 350, g);
+        }
     }
 }

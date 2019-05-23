@@ -98,5 +98,10 @@ class Cidade : IComparable<Cidade>
     {
         return this.id - outra.Id;
     }
+
+    public override string ToString()
+    {
+        return id + "\n\n" + nome;
+    }
 }
 

@@ -18,6 +18,6 @@
  17Rowan           2317 1363
  18Senzeni Na       775 1357
  19Sheffield        651  939
- 20Temperança      2103 1389
+ 20Temperança      3103 1389
  21Tharsis          531  809
  22Underhill       1552 1051

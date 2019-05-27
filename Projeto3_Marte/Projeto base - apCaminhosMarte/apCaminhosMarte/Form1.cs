@@ -27,7 +27,8 @@ namespace apCaminhosMarte
 
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Buscar caminhos entre cidades selecionadas");
+            string origem = lsbOrigem.SelectedItem.ToString();
+            string destino = lsbDestino.SelectedItem.ToString();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -40,15 +41,11 @@ namespace apCaminhosMarte
                 LerArquivo(arq);
             }
         }
-
-       
-
         private void LerArquivo(StreamReader arquivo)
         {
             while(!arquivo.EndOfStream)
-            {
                 arvore.Incluir(Cidade.LerRegistro(arquivo));
-            }
+
             arquivo.Close();
         }
 
@@ -57,6 +54,11 @@ namespace apCaminhosMarte
             Graphics g = e.Graphics;
             int t = (int)pnlArvore.Width / 2;
             arvore.DesenharArvore(g, t);
+        }
+
+        private void pbMapa_Paint(object sender, PaintEventArgs e)
+        {
+            arvore.DesenharPontos(e.Graphics, pbMapa);
         }
     }
 }

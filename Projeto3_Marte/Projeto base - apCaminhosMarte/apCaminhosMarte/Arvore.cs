@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace apCaminhosMarte
 {
@@ -148,6 +149,36 @@ namespace apCaminhosMarte
         public void DesenharArvore(Graphics g, int tamanho)
         {
             DesenharArvore(true, raiz, tamanho, 0, Math.PI / 2, Math.PI / 2.5, 350, g);
+        }
+
+        public void DesenharPontos(Graphics g, PictureBox pbMapa)
+        {
+            DesenharPontos(raiz, g, pbMapa);
+        }
+
+        private void DesenharPontos(NoArvore<Dado> atual, Graphics grafo, PictureBox mapa)
+        {
+            if(atual != null)
+            {
+                float coordenadaX = (atual.Info as Cidade).CoordenadaX * mapa.Width / 4096;
+                float coordenadaY = (atual.Info as Cidade).CoordenadaY * mapa.Height / 2048;
+
+                 //grafo.DrawLine(
+                 //new Pen(Color.Red, 2f),
+                 // new Point(0, 0),
+                 // new Point(pbMapa.Size.Width, pbMapa.Size.Height)
+                 //);
+                grafo.FillEllipse(
+                  new SolidBrush(Color.Black),
+                  coordenadaX, coordenadaY, 10f, 10f
+                );
+
+                grafo.DrawString((atual.Info as Cidade).Nome, new Font("Courier New", 8, FontStyle.Bold),
+                             new SolidBrush(Color.FromArgb(32, 32, 32)), coordenadaX + 12, coordenadaY - 10);
+
+                DesenharPontos(atual.Esq, grafo, mapa);
+                DesenharPontos(atual.Dir, grafo, mapa);
+            } 
         }
     }
 }

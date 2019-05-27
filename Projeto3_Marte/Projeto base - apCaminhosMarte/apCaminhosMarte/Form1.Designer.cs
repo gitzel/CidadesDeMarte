@@ -54,8 +54,8 @@
             this.lsbOrigem = new System.Windows.Forms.ListBox();
             this.pbMapa = new System.Windows.Forms.PictureBox();
             this.tpArvore = new System.Windows.Forms.TabPage();
-            this.dlgArquivo = new System.Windows.Forms.OpenFileDialog();
             this.pnlArvore = new System.Windows.Forms.Panel();
+            this.dlgArquivo = new System.Windows.Forms.OpenFileDialog();
             this.tabControl1.SuspendLayout();
             this.tpRotas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
@@ -323,6 +323,7 @@
             this.pbMapa.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pbMapa.TabIndex = 0;
             this.pbMapa.TabStop = false;
+            this.pbMapa.Paint += new System.Windows.Forms.PaintEventHandler(this.pbMapa_Paint);
             // 
             // tpArvore
             // 
@@ -335,10 +336,6 @@
             this.tpArvore.Text = "Árvore de Cidades";
             this.tpArvore.UseVisualStyleBackColor = true;
             // 
-            // dlgArquivo
-            // 
-            this.dlgArquivo.FileName = "openFileDialog1";
-            // 
             // pnlArvore
             // 
             this.pnlArvore.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -347,6 +344,10 @@
             this.pnlArvore.Size = new System.Drawing.Size(1312, 519);
             this.pnlArvore.TabIndex = 0;
             this.pnlArvore.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlArvore_Paint);
+            // 
+            // dlgArquivo
+            // 
+            this.dlgArquivo.FileName = "openFileDialog1";
             // 
             // Form1
             // 

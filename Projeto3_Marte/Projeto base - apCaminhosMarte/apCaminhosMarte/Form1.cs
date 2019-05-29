@@ -49,76 +49,96 @@ namespace apCaminhosMarte
 
         private bool AcharCaminhos(int entrada, int saida, ref PilhaLista<Caminho> pilhaCaminho)
         {
-            int quantas = arvore.QuantosDados;
+            int quantasCidades = arvore.QuantosDados;
 
-            bool[] passouCidade = new bool[quantas];
+            bool[] passouCidade = new bool[quantasCidades];
 
             for (int i = 0; i < passouCidade.Length; i++)
                 passouCidade[i] = false;
 
-            bool achou = false;
-            int entrada_atual = entrada;
-            int saida_atual = 0;
-
+            bool acabou = false;
             PilhaLista<Caminho> aux = new PilhaLista<Caminho>();
+            int entradaAtual = entrada;
+            int saidaAtual = 0;
 
-            while (!achou && !(entrada_atual == entrada && saida_atual == quantas && pilhaCaminho.EstaVazia()))
+            while(!acabou)
             {
-                while (!achou && saida_atual < quantas)
+                int indice = 0;
+                while (indice < quantasCidades)
                 {
-                    if (adjacencia[entrada_atual, saida_atual] == 0)
-                        saida_atual++;
-                    else
-                        if (passouCidade[saida_atual])
-                        saida_atual++;
-                    else
-                         if (saida_atual == saida)
-                         {
-                            //int distancia = adjacencia[entrada_atual, saida_atual];
-                            //dgvCaminhoEncontrado[entrada_atual, saida_atual].Value = distancia;
-                            pilhaCaminho.Empilhar(new Caminho(entrada_atual, saida_atual, adjacencia[entrada_atual, saida_atual]));
-
-                            while (++saida_atual < quantas)
-                                if (adjacencia[entrada_atual, saida_atual] != 0)
-                                    aux.Empilhar(new Caminho(entrada_atual, saida_atual, adjacencia[entrada_atual, saida_atual]));
-
-                            if (aux.EstaVazia())
-                                achou = true;
-                            else
-                            {
-                                Caminho anterior = aux.Desempilhar();
-                                entrada_atual = anterior.IdOrigem;
-                                saida_atual = anterior.IdDestino;
-                            }
-                                
-                         }
-                    else
+                    if (adjacencia[entradaAtual, indice] != 0)        // tem caminho 
                     {
-                        //int distancia = adjacencia[entrada_atual, saida_atual];
-                        //dgvCaminhoEncontrado[entrada_atual, saida_atual].Value = distancia;
-
-                        pilhaCaminho.Empilhar(new Caminho(entrada_atual, saida_atual, adjacencia[entrada_atual, saida_atual]));
-                        passouCidade[entrada_atual] = true;
-                        entrada_atual = saida_atual;
-
-                        while (++saida_atual < quantas)
-                            if (adjacencia[entrada_atual, saida_atual] != 0)
-                                aux.Empilhar(new Caminho(entrada_atual, saida_atual, adjacencia[entrada_atual, saida_atual]));
-
-                        saida_atual = 0;
+                        Caminho umCaminho = new Caminho(entradaAtual, indice, adjacencia[entradaAtual, indice]);
+                        dgvCaminhoEncontrado[indice, entradaAtual].Value = umCaminho.Distancia;
+                        entradaAtual = indice;
+                        indice = 0;
+                        aux.Empilhar(umCaminho);
                     }
                 }
-
-                if (!achou)
-                    if (!pilhaCaminho.EstaVazia())
-                    {
-                        Caminho cam = pilhaCaminho.Desempilhar();
-                        saida_atual = cam.IdDestino + 1;
-                        entrada_atual = cam.IdOrigem;
-                    }
+                
+                acabou = true;
             }
 
-            return achou;
+            //bool achou = false;
+            ////PilhaLista<Caminho> aux = new PilhaLista<Caminho>();
+
+            //while (!achou && !(entradaAtual == entrada && saidaAtual == quantasCidades && pilhaCaminho.EstaVazia()))
+            //{
+            //    while (!achou && saidaAtual < quantasCidades)
+            //    {
+            //        if (adjacencia[entradaAtual, saidaAtual] == 0)
+            //            saidaAtual++;
+            //        else
+            //            if (passouCidade[saidaAtual])
+            //            saidaAtual++;
+            //        else
+            //             if (saidaAtual == saida)
+            //             {
+            //                //int distancia = adjacencia[entradaAtual, saidaAtual];
+            //                //dgvCaminhoEncontrado[entradaAtual, saidaAtual].Value = distancia;
+            //                pilhaCaminho.Empilhar(new Caminho(entradaAtual, saidaAtual, adjacencia[entradaAtual, saidaAtual]));
+
+            //                while (++saidaAtual < quantasCidades)
+            //                    if (adjacencia[entradaAtual, saidaAtual] != 0)
+            //                        aux.Empilhar(new Caminho(entradaAtual, saidaAtual, adjacencia[entradaAtual, saidaAtual]));
+
+            //                if (aux.EstaVazia())
+            //                    achou = true;
+            //                else
+            //                {
+            //                    Caminho anterior = aux.Desempilhar();
+            //                    entradaAtual = anterior.IdOrigem;
+            //                    saidaAtual = anterior.IdDestino;
+            //                }
+                                
+            //             }
+            //        else
+            //        {
+            //            //int distancia = adjacencia[entradaAtual, saidaAtual];
+            //            //dgvCaminhoEncontrado[entradaAtual, saidaAtual].Value = distancia;
+
+            //            pilhaCaminho.Empilhar(new Caminho(entradaAtual, saidaAtual, adjacencia[entradaAtual, saidaAtual]));
+            //            passouCidade[entradaAtual] = true;
+            //            entradaAtual = saidaAtual;
+
+            //            while (++saidaAtual < quantasCidades)
+            //                if (adjacencia[entradaAtual, saidaAtual] != 0)
+            //                    aux.Empilhar(new Caminho(entradaAtual, saidaAtual, adjacencia[entradaAtual, saidaAtual]));
+
+            //            saidaAtual = 0;
+            //        }
+            //    }
+
+            //    if (!achou)
+            //        if (!pilhaCaminho.EstaVazia())
+            //        {
+            //            Caminho cam = pilhaCaminho.Desempilhar();
+            //            saidaAtual = cam.IdDestino + 1;
+            //            entradaAtual = cam.IdOrigem;
+            //        }
+            //}
+
+            return acabou;
         }
 
         private void Form1_Load(object sender, EventArgs e)

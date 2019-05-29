@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-class Caminho
+class Caminho  : IComparable<Caminho>
 {
    const int inicioOrigem = 0,
               tamanhoOrigem = 3,
@@ -35,6 +35,13 @@ class Caminho
         Custo = custo;
     }
 
+    public Caminho(int idOrigem, int idDestino, int distancia)
+    {
+        IdOrigem = idOrigem;
+        IdDestino = idDestino;
+        Distancia = distancia;
+    }
+
     public int IdOrigem
     {
         get => idOrigem;
@@ -61,7 +68,7 @@ class Caminho
         set
         {
             if (value > 0)
-                distancia = 0;
+                distancia = value;
         }
     }
 
@@ -108,5 +115,9 @@ class Caminho
         return ret;
     }
 
+    public int CompareTo(Caminho other)
+    {
+        return this.distancia - other.distancia;
+    }
 }
 

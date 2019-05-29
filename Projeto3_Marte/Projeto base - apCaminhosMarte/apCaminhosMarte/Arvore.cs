@@ -163,12 +163,7 @@ namespace apCaminhosMarte
                 float coordenadaX = (atual.Info as Cidade).CoordenadaX * mapa.Width / 4096;
                 float coordenadaY = (atual.Info as Cidade).CoordenadaY * mapa.Height / 2048;
 
-                 //grafo.DrawLine(
-                 //new Pen(Color.Red, 2f),
-                 // new Point(0, 0),
-                 // new Point(pbMapa.Size.Width, pbMapa.Size.Height)
-                 //);
-                grafo.FillEllipse(
+                 grafo.FillEllipse(
                   new SolidBrush(Color.Black),
                   coordenadaX, coordenadaY, 10f, 10f
                 );
@@ -179,6 +174,22 @@ namespace apCaminhosMarte
                 DesenharPontos(atual.Esq, grafo, mapa);
                 DesenharPontos(atual.Dir, grafo, mapa);
             } 
+        }
+
+        private void Escrever(ListBox lista, NoArvore<Dado> atual)
+        {
+            if(atual != null)
+            {
+                Escrever(lista, atual.Esq);
+                Cidade c = (atual.Info as Cidade);
+                lista.Items.Add($"{c.Id: 00} - {c.Nome}");
+                Escrever(lista, atual.Dir); 
+            }
+        }
+
+        public void Escrever(ListBox lista)
+        {
+            Escrever(lista, raiz);
         }
     }
 }

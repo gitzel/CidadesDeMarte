@@ -71,7 +71,7 @@ class Cidade : IComparable<Cidade>
         CoordenadaX = coordenadaX;
         CoordenadaY = coordenadaY;
     }
-    
+
     public static Cidade LerRegistro(StreamReader arq)
     {
         Cidade ret = null;

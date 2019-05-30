@@ -94,9 +94,6 @@ namespace apCaminhosMarte
         }
         public int QuantasFolhas { get => this.QtasFolhas(this.Raiz); }
 
-
-
-        // Exercício 5 – Altura de uma árvore binária
         private int Altura(NoArvore<Dado> noAtual)
         {
             int alturaEsquerda,
@@ -151,45 +148,34 @@ namespace apCaminhosMarte
             DesenharArvore(true, raiz, tamanho, 0, Math.PI / 2, Math.PI / 2.5, 350, g);
         }
 
-        public void DesenharPontos(Graphics g, PictureBox pbMapa)
+        public void PreOrdem(Action<Dado> action)
         {
-            DesenharPontos(raiz, g, pbMapa);
+            Percorrer(action, raiz);
         }
-
-        private void DesenharPontos(NoArvore<Dado> atual, Graphics grafo, PictureBox mapa)
+        
+        private void Percorrer(Action<Dado>action, NoArvore<Dado> atual)
         {
-            if(atual != null)
+            if (atual != null)
             {
-                float coordenadaX = (atual.Info as Cidade).CoordenadaX * mapa.Width / 4096;
-                float coordenadaY = (atual.Info as Cidade).CoordenadaY * mapa.Height / 2048;
-
-                 grafo.FillEllipse(
-                  new SolidBrush(Color.Black),
-                  coordenadaX, coordenadaY, 10f, 10f
-                );
-
-                grafo.DrawString((atual.Info as Cidade).Nome, new Font("Courier New", 8, FontStyle.Bold),
-                             new SolidBrush(Color.FromArgb(32, 32, 32)), coordenadaX + 12, coordenadaY - 10);
-
-                DesenharPontos(atual.Esq, grafo, mapa);
-                DesenharPontos(atual.Dir, grafo, mapa);
-            } 
-        }
-
-        private void Escrever(ListBox lista, NoArvore<Dado> atual)
-        {
-            if(atual != null)
-            {
-                Escrever(lista, atual.Esq);
-                Cidade c = (atual.Info as Cidade);
-                lista.Items.Add($"{c.Id: 00} - {c.Nome}");
-                Escrever(lista, atual.Dir); 
+                action(atual.Info);
+                Percorrer(action, atual.Esq);
+                Percorrer(action, atual.Dir);
             }
         }
 
-        public void Escrever(ListBox lista)
+        public void InOrdem(Action<Dado> action)
         {
-            Escrever(lista, raiz);
+            PercorrerInOrdem(action, raiz);
+        }
+
+        private void PercorrerInOrdem(Action<Dado>action, NoArvore<Dado> atual)
+        {
+            if(atual != null)
+            {
+                PercorrerInOrdem(action, atual.Esq);
+                action(atual.Info);
+                PercorrerInOrdem(action, atual.Dir); 
+            }
         }
     }
 }

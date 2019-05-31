@@ -34,20 +34,59 @@ namespace apCaminhosMarte
 
             PilhaLista<Caminho> pilhaCaminho = new PilhaLista<Caminho>();
 
-            if (AcharCaminhos(origem, destino, ref pilhaCaminho))
+            //int saidaAnterior;
+            //int distanciaTotal;
+
+            //dgvCaminhoEncontrado.RowCount = 2;
+            //dgvCaminhoEncontrado.Rows[0].HeaderCell.Value = 0 + "";
+            //dgvCaminhoEncontrado.Rows[1].HeaderCell.Value = 1 + "";
+
+            dgvCaminhoEncontrado.RowCount = 0;
+            dgvCaminhoEncontrado.ColumnCount = 0;
+            //dgvCaminhoEncontrado.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+            //dgvCaminhoEncontrado.Columns[i].HeaderText = i + "";
+            //dgvCaminhoEncontrado.Rows[i].HeaderCell.Value = i + "";
+
+            //i++;
+
+            if (AcharCaminhos(origem, destino, pilhaCaminho))
             {
-                PilhaLista<Caminho> caminhoCerto = new PilhaLista<Caminho>();
-
                 while (!pilhaCaminho.EstaVazia())
-                    caminhoCerto.Empilhar(pilhaCaminho.Desempilhar());
+                {
+                    Caminho c = pilhaCaminho.Desempilhar();
 
+                    //if(c.IdOrigem == origem)
 
+                    bool pode = true;
+                    for (int i = 0; i < dgvCaminhoEncontrado.RowCount; i++)
+                        if (dgvCaminhoEncontrado.Rows[i].HeaderCell.Value.ToString() == c.IdOrigem + "")
+                            pode = false;
+                  
+                    if (pode)
+                    {
+                        int onde = ++dgvCaminhoEncontrado.RowCount;
+                        dgvCaminhoEncontrado.Rows[onde-1].HeaderCell.Value = c.IdOrigem;
+                    }
+
+                    pode = true;
+
+                    for (int i = 0; i < dgvCaminhoEncontrado.ColumnCount; i++)
+                        if (dgvCaminhoEncontrado.Columns[i].HeaderText == c.IdDestino + "")
+                            pode = false;
+
+                    if (pode)
+                    {
+                        int onde = ++dgvCaminhoEncontrado.ColumnCount;
+                        dgvCaminhoEncontrado.Columns[onde-1].HeaderText = c.IdDestino + "";
+                        dgvCaminhoEncontrado.Columns[onde-1].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    }
+                }
             }
             else
                 MessageBox.Show("Não existe caminho entre essas cidades!!!");
         }
 
-        private bool AcharCaminhos(int entrada, int saida, ref PilhaLista<Caminho> pilhaCaminho)
+        private bool AcharCaminhos(int entrada, int saida, PilhaLista<Caminho> pilhaCaminho)
         {
             int quantasCidades = arvore.QuantosDados;
 
@@ -121,9 +160,6 @@ namespace apCaminhosMarte
             int tamanhoMatriz = arvore.QuantosDados;
             adjacencia = new int[tamanhoMatriz, tamanhoMatriz];
 
-            dgvCaminhoEncontrado.RowCount = tamanhoMatriz;
-            dgvCaminhoEncontrado.ColumnCount = tamanhoMatriz;
-
             CarregarCidades();
 
             LerCaminhos(new StreamReader("CaminhosEntreCidadesMarte.txt"));
@@ -131,16 +167,9 @@ namespace apCaminhosMarte
 
         private void CarregarCidades()
         {
-            int i = 0;
             arvore.InOrdem((Cidade c) => {
                 lsbOrigem.Items.Add($"{c.Id:00} - {c.Nome}");
-                lsbDestino.Items.Add($"{c.Id:00} - {c.Nome}");
-
-                dgvCaminhoEncontrado.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvCaminhoEncontrado.Columns[i].HeaderText = i + "";
-                dgvCaminhoEncontrado.Rows[i].HeaderCell.Value = i + "";
-
-                i++;
+                lsbDestino.Items.Add($"{c.Id:00} - {c.Nome}");            
             });
         }
 

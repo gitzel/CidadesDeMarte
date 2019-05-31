@@ -28,9 +28,9 @@ namespace apCaminhosMarte
 
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
-            int origem = int.Parse(lsbOrigem.SelectedItem.ToString().Substring(1, 2));
+            int origem = int.Parse(lsbOrigem.SelectedItem.ToString().Substring(0, 2));
 
-            int destino = int.Parse(lsbDestino.SelectedItem.ToString().Substring(1, 2));
+            int destino = int.Parse(lsbDestino.SelectedItem.ToString().Substring(0, 2));
 
             PilhaLista<Caminho> pilhaCaminho = new PilhaLista<Caminho>();
 

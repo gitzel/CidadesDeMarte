@@ -40,12 +40,6 @@
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvCaminhoEncontrado = new System.Windows.Forms.DataGridView();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -177,61 +171,12 @@
             this.dgvCaminhoEncontrado.AllowUserToResizeRows = false;
             this.dgvCaminhoEncontrado.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvCaminhoEncontrado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvCaminhoEncontrado.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.Column2,
-            this.Column3,
-            this.Column4,
-            this.Column5,
-            this.Column6});
-            this.dgvCaminhoEncontrado.Location = new System.Drawing.Point(1047, 160);
+            this.dgvCaminhoEncontrado.Location = new System.Drawing.Point(1044, 160);
             this.dgvCaminhoEncontrado.Name = "dgvCaminhoEncontrado";
             this.dgvCaminhoEncontrado.ReadOnly = true;
             this.dgvCaminhoEncontrado.RowHeadersWidth = 50;
             this.dgvCaminhoEncontrado.Size = new System.Drawing.Size(498, 240);
             this.dgvCaminhoEncontrado.TabIndex = 9;
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "Cidade";
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
-            this.Column1.Width = 75;
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Cidade";
-            this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
-            this.Column2.Width = 75;
-            // 
-            // Column3
-            // 
-            this.Column3.HeaderText = "Cidade";
-            this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
-            this.Column3.Width = 75;
-            // 
-            // Column4
-            // 
-            this.Column4.HeaderText = "Cidade";
-            this.Column4.Name = "Column4";
-            this.Column4.ReadOnly = true;
-            this.Column4.Width = 75;
-            // 
-            // Column5
-            // 
-            this.Column5.HeaderText = "Cidade";
-            this.Column5.Name = "Column5";
-            this.Column5.ReadOnly = true;
-            this.Column5.Width = 75;
-            // 
-            // Column6
-            // 
-            this.Column6.HeaderText = "Cidade";
-            this.Column6.Name = "Column6";
-            this.Column6.ReadOnly = true;
-            this.Column6.Width = 75;
             // 
             // label4
             // 
@@ -318,7 +263,7 @@
             this.tpArvore.Location = new System.Drawing.Point(4, 22);
             this.tpArvore.Name = "tpArvore";
             this.tpArvore.Padding = new System.Windows.Forms.Padding(3);
-            this.tpArvore.Size = new System.Drawing.Size(1318, 525);
+            this.tpArvore.Size = new System.Drawing.Size(1552, 525);
             this.tpArvore.TabIndex = 1;
             this.tpArvore.Text = "Árvore de Cidades";
             this.tpArvore.UseVisualStyleBackColor = true;
@@ -328,7 +273,7 @@
             this.pnlArvore.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlArvore.Location = new System.Drawing.Point(3, 3);
             this.pnlArvore.Name = "pnlArvore";
-            this.pnlArvore.Size = new System.Drawing.Size(1312, 519);
+            this.pnlArvore.Size = new System.Drawing.Size(1546, 519);
             this.pnlArvore.TabIndex = 0;
             this.pnlArvore.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlArvore_Paint);
             // 
@@ -370,12 +315,6 @@
         private System.Windows.Forms.PictureBox pbMapa;
         private System.Windows.Forms.TabPage tpArvore;
         private System.Windows.Forms.DataGridView dgvCaminhoEncontrado;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.DataGridView dataGridView2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;

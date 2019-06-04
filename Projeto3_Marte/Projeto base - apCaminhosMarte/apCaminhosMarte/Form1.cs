@@ -37,15 +37,20 @@ namespace apCaminhosMarte
             dgvCaminhoEncontrado.RowCount = 0;
             dgvCaminhoEncontrado.ColumnCount = 0;
 
-            int[] cidade = new int[arvore.QuantosDados];
+            int qtdMaxima = arvore.QuantosDados;
+
+            int[] cidade = new int[qtdMaxima];
+            PilhaLista<Caminho>[] caminhos = new PilhaLista<Caminho>[qtdMaxima];
 
             for (int i = 0; i < cidade.Length; i++)
+            {
                 cidade[i] = 0;
+                caminhos[i] = new PilhaLista<Caminho>();
+            }
+               
 
             if (AcharCaminhos(origem, destino, pilhaCaminho))
             {
-                pilhaCaminho.Inverter();
-
                 while (!pilhaCaminho.EstaVazia())
                 {
                     Caminho c = pilhaCaminho.Desempilhar();
@@ -74,12 +79,43 @@ namespace apCaminhosMarte
                         dgvCaminhoEncontrado.ColumnCount++;
                     }
 
-                    if (c.IdDestino == destino || cidade[c.IdDestino] != 0)
+                    if (c.IdDestino == destino)
+                    {
                         cidade[c.IdOrigem] += c.Distancia;
+                        caminhos[c.IdOrigem].Empilhar(c);
+                    }
+                    else
+                    {
+                        cidade[c.IdDestino] += c.Distancia+ cidade[c.IdOrigem];
 
+                        caminhos[c.IdDestino].Empilhar(c);
+                    }
                 }
                 dgvCaminhoEncontrado.ColumnCount--;
-                
+
+                int menor = int.MaxValue;
+                int qualMenor = -1;
+
+                for (int i = 0; i < cidade.Length; i++)
+                    if (menor > cidade[i] && cidade[i] != 0)
+                    {
+                        menor = cidade[i];
+                        qualMenor = i;
+                    }
+
+                int saiuDe = qualMenor;
+      
+                do
+                {
+                    while (!caminhos[saiuDe].EstaVazia())
+                    {
+                        Caminho possivelCaminho = caminhos[qualMenor].Desempilhar();
+              
+                         //desenhar no mapa o caminho 
+                      
+                        saiuDe = possivelCaminho.IdOrigem;
+                    }
+                } while (saiuDe != origem);
             }
             else
                 MessageBox.Show("Não existe caminho entre essas cidades!!!");

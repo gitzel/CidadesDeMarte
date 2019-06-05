@@ -41,13 +41,22 @@ public class PilhaLista<Dado> : IStack<Dado> where Dado : IComparable<Dado>
         return o;
     }
 
-    //public void Inverter()
-    //{
-    //    PilhaLista<Dado> pilhaInversa = new PilhaLista<Dado>();
+    public PilhaLista(PilhaLista<Dado> model)
+    {
+        this.topo = model.topo;
+        this.tamanho = model.tamanho;
+    }
 
-    //    while (!EstaVazia())
-    //        pilhaInversa.Empilhar(Desempilhar());
+    public PilhaLista<Dado> Clone()
+    {
+        PilhaLista<Dado> ret = null;
+        try
+        {
+            ret = new PilhaLista<Dado>(this);
+        }
+        catch(Exception erro)
+        { }
 
-    //    topo = pilhaInversa.topo;
-    //}
+        return ret;
+    }
 }

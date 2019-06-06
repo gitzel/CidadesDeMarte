@@ -177,5 +177,27 @@ namespace apCaminhosMarte
                 PercorrerInOrdem(action, atual.Dir); 
             }
         }
+
+
+        public Dado ExisteDado(Dado procurado)
+        {
+            antecessor = null;
+            atual = Raiz;
+            while (atual != null)
+            {
+                if (atual.Info.CompareTo(procurado) == 0)
+                    return atual.Info;
+                else
+                {
+                    antecessor = atual;
+                    if (procurado.CompareTo(atual.Info) < 0)
+                        atual = atual.Esq; // Desloca à esquerda
+                    else
+                        atual = atual.Dir; // Desloca à direita
+                }
+            }
+            return default(Dado); // Se atual == null, a chave não existe mas antecessor aponta o pai 
+        }
+        
     }
 }

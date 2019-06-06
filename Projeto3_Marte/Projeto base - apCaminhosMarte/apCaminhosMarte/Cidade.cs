@@ -72,6 +72,10 @@ class Cidade : IComparable<Cidade>
         CoordenadaY = coordenadaY;
     }
 
+    public Cidade(int id)
+    {
+        Id = id;
+    }
     public static Cidade LerRegistro(StreamReader arq)
     {
         Cidade ret = null;
@@ -101,7 +105,7 @@ class Cidade : IComparable<Cidade>
 
     public override string ToString()
     {
-        return id + "\n\n" + nome;
+        return $"{id:00}\n\n{nome}";
     }
 }
 

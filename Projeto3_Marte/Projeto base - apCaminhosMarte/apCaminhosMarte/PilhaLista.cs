@@ -59,4 +59,14 @@ public class PilhaLista<Dado> : IStack<Dado> where Dado : IComparable<Dado>
 
         return ret;
     }
+
+    public void Inverter()
+    {
+        PilhaLista<Dado> aux = new PilhaLista<Dado>();
+        while (!EstaVazia())
+            aux.Empilhar(Desempilhar());
+
+        this.topo = aux.topo;
+        this.tamanho = aux.tamanho;
+    }
 }

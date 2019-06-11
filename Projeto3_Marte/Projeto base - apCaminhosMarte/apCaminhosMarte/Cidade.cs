@@ -93,7 +93,7 @@ class Cidade : IComparable<Cidade>
         }
         catch (Exception erro)
         {
-            throw new Exception(erro.Message);
+            throw new IOException(erro.Message);
         }
         return ret;
     }

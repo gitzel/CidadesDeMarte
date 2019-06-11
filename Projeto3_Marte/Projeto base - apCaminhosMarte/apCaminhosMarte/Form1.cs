@@ -13,39 +13,45 @@ namespace apCaminhosMarte
 {
     public partial class Form1 : Form
     {
-        const int TAMANHOMAPAX = 4096, TAMANHOMAPAY = 2048;
+        const int TAMANHOMAPACOORDENADAX = 4096, TAMANHOMAPACOORDENADAY = 2048;     // tamanho do mapa real
 
-        PilhaLista<Caminho> melhorCaminho;
-        Arvore<Cidade> arvore;
-        int[,] adjacencia;
+        PilhaLista<Caminho> melhorCaminho;          // pilha que guarda o melhor caminho entre duas cidades
+        Arvore<Cidade> arvore;                  // arvore binária para armazenar as cidades
+        int[,] adjacencia;                  // matriz de adjacência para guardas as distancias 
 
-        public Form1()
+        public Form1()      
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e) // quando carregar o formulário
         {
-            arvore = new Arvore<Cidade>();
-            melhorCaminho = null;
-            LeituraDosArquivos();
+            arvore = new Arvore<Cidade>();              // instanciamos a arvore
+            melhorCaminho = null;           // zeramos o menor caminho
+            LeituraDosArquivos();           // fazemos a leitura dos arquivos
         }
 
-        private void LeituraDosArquivos()
+        private void LeituraDosArquivos()       // metodo para ler arquivos
         {
-            if (dlgArquivo.ShowDialog() == DialogResult.OK)
+            try
             {
-                IniciarArvore(new StreamReader(dlgArquivo.FileName, Encoding.Default, true));
+                if (dlgArquivo.ShowDialog() == DialogResult.OK)     // caso o usuario escolha o arquivo correto
+                {
+                    IniciarArvore(new StreamReader(dlgArquivo.FileName, Encoding.Default, true));       // preenchemos a arvore com as cidades
 
-                int tamanhoMatriz = arvore.QuantosDados;
-                adjacencia = new int[tamanhoMatriz, tamanhoMatriz];
+                    int tamanhoMatriz = arvore.QuantosDados;                // guardamos numa variavel a quantidade de cidades
+                    adjacencia = new int[tamanhoMatriz, tamanhoMatriz];     // instancia a matriz
+                    LerCaminhos(new StreamReader("CaminhosEntreCidadesMarte.txt"));         // inicia a leitura do arquivo dos caminhos
+                        
+                    CarregarListBox();                      ///
 
-                CarregarListBox();
-
-                LerCaminhos(new StreamReader("CaminhosEntreCidadesMarte.txt"));
-
-                pbMapa.Invalidate();
-                pnlArvore.Invalidate();
+                    pbMapa.Invalidate();
+                    pnlArvore.Invalidate();
+                }
+            }
+            catch(Exception)
+            {
+                MessageBox.Show("Erro ao ler arquivos!", "Arquivo inválido", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -268,8 +274,8 @@ namespace apCaminhosMarte
             Graphics g = e.Graphics;
             arvore.PreOrdem((Cidade c) =>
             {
-                float coordenadaX = c.CoordenadaX * pbMapa.Width / TAMANHOMAPAX;
-                float coordenadaY = c.CoordenadaY * pbMapa.Height / TAMANHOMAPAY;
+                float coordenadaX = c.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX;
+                float coordenadaY = c.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY;
                 g.FillEllipse(
                  new SolidBrush(Color.Black),
                  coordenadaX, coordenadaY, 10f, 10f
@@ -291,7 +297,7 @@ namespace apCaminhosMarte
                     using (var pen = new Pen(Color.FromArgb(211, 47, 47), 4))
                     {
                         pen.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
-                        g.DrawLine(pen, origem.CoordenadaX * pbMapa.Width / TAMANHOMAPAX + 3, origem.CoordenadaY * pbMapa.Height / TAMANHOMAPAY + 3, destino.CoordenadaX * pbMapa.Width / TAMANHOMAPAX + 3, destino.CoordenadaY * pbMapa.Height / TAMANHOMAPAY + 3);
+                        g.DrawLine(pen, origem.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX + 3, origem.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY + 3, destino.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX + 3, destino.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY + 3);
                     }
                     ExibirDgv(dgvMelhorCaminho, possivelCaminho);
                 }

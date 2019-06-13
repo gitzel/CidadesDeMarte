@@ -116,68 +116,22 @@ namespace apCaminhosMarte
 
                         int menor = int.MaxValue;
                         int onde = destino;
-                        int retorno = -1;
 
-                        int[] distancia = new int[qtdMaxima];
+                        PilhaLista<Caminho>[] pilhaCaminhos = new PilhaLista<Caminho>[1000];
 
-                        PilhaLista<Caminho>[] caminhos = new PilhaLista<Caminho>[qtdMaxima];
-
-                        for (int indice = 0; indice < caminhosPossiveis.Length; indice++)
+                        for(int i = 0; i< pilhaCaminhos.Length; i++)
                         {
-                            distancia[indice] = 0;
-                            caminhos[indice] = new PilhaLista<Caminho>();
+                            pilhaCaminhos[i] = new PilhaLista<Caminho>();
                         }
 
-                        PilhaLista<Caminho> caminhosAnteriores = new PilhaLista<Caminho>();
+                        int a = 0;
 
-                        while (true)
+                        while(!caminhosPossiveis[onde].EstaVazia())
                         {
-                            while (!caminhosPossiveis[onde].EstaVazia())
-                            {
-                                Caminho p = caminhosPossiveis[onde].Desempilhar();
-
-                                int entrada = p.IdOrigem;
-
-                                if (!caminhos[p.IdDestino].EstaVazia())
-                                {
-                                    caminhos[entrada] = caminhos[p.IdDestino].Clone();
-                                    distancia[entrada] = distancia[p.IdDestino];
-                                }
-
-                                caminhos[entrada].Empilhar(p);
-                                distancia[entrada] += p.Distancia;
-
-                                onde = entrada;
-                            }
-
-                            if (menor < distancia[onde])
-                            {
-                                menor = distancia[onde];
-                                melhorCaminho = caminhos[onde].Clone();
-                            }
-
-                            while(!caminhos[onde].EstaVazia())
-                            {
-                                Caminho desempilha = caminhos[onde].Desempilhar();
-
-                                if (caminhosPossiveis[desempilha.IdDestino].EstaVazia())
-                                {
-                                    if (!caminhosAnteriores.EstaVazia() && caminhosAnteriores.OTopo().IdDestino == desempilha.IdDestino)
-                                        caminhosPossiveis[desempilha.IdDestino].Empilhar(caminhosAnteriores.Desempilhar());
-                                    caminhosPossiveis[desempilha.IdDestino].Empilhar(desempilha);
-                                }
-                                else
-                                {
-                                    caminhosAnteriores = caminhosPossiveis[destino].Clone();
-                                    caminhosAnteriores.Empilhar(caminhos[onde].OTopo());
-                                    caminhosAnteriores.Inverter();
-                                    
-                                }
-                            }
-
-                            break;
+                            Caminho p = caminhosPossiveis[onde].Desempilhar();
+                            pilhaCaminhos[a].Empilhar(p);
+                            onde = p.IdOrigem;
                         }
-
 
                         //for (int indice = 0; indice < distancia.Length; indice++)
                         //    if (menor > distancia[indice] && distancia[indice] != 0 && caminhosPossiveis[indice].OTopo().IdDestino == destino)

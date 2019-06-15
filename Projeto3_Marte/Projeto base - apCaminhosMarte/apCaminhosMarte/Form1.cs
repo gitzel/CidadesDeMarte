@@ -117,28 +117,66 @@ namespace apCaminhosMarte
                         int menor = int.MaxValue;
                         int onde = destino;
 
-                        PilhaLista<Caminho>[] pilhaCaminhos = new PilhaLista<Caminho>[1000];
+                        PilhaLista<Caminho>[] caminhos = new PilhaLista<Caminho>[qtdMaxima];
 
-                        for(int i = 0; i< pilhaCaminhos.Length; i++)
+                        for(int i = 0; i< caminhos.Length; i++)
                         {
-                            pilhaCaminhos[i] = new PilhaLista<Caminho>();
+                            caminhos[i] = new PilhaLista<Caminho>();
                         }
 
-                        int a = 0;
+                        PilhaLista<Caminho> caminhosAnteriores = new PilhaLista<Caminho>();
 
-                        while(!caminhosPossiveis[onde].EstaVazia())
-                        {
-                            Caminho p = caminhosPossiveis[onde].Desempilhar();
-                            pilhaCaminhos[a].Empilhar(p);
-                            onde = p.IdOrigem;
-                        }
 
-                        //for (int indice = 0; indice < distancia.Length; indice++)
-                        //    if (menor > distancia[indice] && distancia[indice] != 0 && caminhosPossiveis[indice].OTopo().IdDestino == destino)
-                        //    {
-                        //        menor = distancia[indice];
-                        //        qualMenor = indice;
-                        //    }
+                        bool b = true;
+                       while(true)
+                       {
+                            while(true)
+                            {
+                                Caminho p = caminhosPossiveis[onde].Desempilhar();
+                                int entrada = p.IdOrigem;
+
+                                if(!caminhos[onde].EstaVazia())
+                                {
+                                    caminhos[entrada] = caminhos[onde].Clone();
+                                }
+
+                                caminhos[entrada].Empilhar(p);
+                                onde = entrada;
+                                break;
+                            }
+
+                            // menor e exibir
+
+                            bool primeiro = true;
+
+                            while (!caminhos[onde].EstaVazia())
+                            {
+                                Caminho a = caminhos[onde].Desempilhar();
+                                if (caminhosPossiveis[a.IdDestino].EstaVazia() && primeiro)
+                                {
+                                    caminhosAnteriores.Empilhar(a);
+                                    primeiro = false;
+                                }
+                                else
+                                    caminhosPossiveis[a.IdDestino].Empilhar(a);
+                            }
+
+                            while (!caminhosAnteriores.EstaVazia() && b)
+                            {
+                                Caminho anterior = caminhosAnteriores.Desempilhar();
+                                if (caminhosPossiveis[anterior.IdDestino].Tamanho() <= 1)
+                                    caminhosPossiveis[anterior.IdDestino].Empilhar(anterior);
+                                else
+                                    caminhosAnteriores.Empilhar(anterior);
+                            }
+
+                            b = false;
+
+                            onde = destino;
+                           
+                            break;
+                       }
+
 
                         pbMapa.Invalidate();
                     }

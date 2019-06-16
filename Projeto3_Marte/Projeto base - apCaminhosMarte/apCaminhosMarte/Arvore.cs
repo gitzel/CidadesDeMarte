@@ -49,7 +49,7 @@ namespace apCaminhosMarte
             }
             return false; // Se atual == null, a chave não existe mas antecessor aponta o pai 
         }
-
+     
         public void Incluir(Dado incluido)    // inclusão usando o método de pesquisa binária
         {
             if (raiz == null)

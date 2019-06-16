@@ -50,6 +50,7 @@
     <Compile Include="Arvore.cs" />
     <Compile Include="Caminho.cs" />
     <Compile Include="Cidade.cs" />
+    <Compile Include="Grafo.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

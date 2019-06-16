@@ -16,8 +16,8 @@ namespace apCaminhosMarte
         const int TAMANHOMAPACOORDENADAX = 4096, TAMANHOMAPACOORDENADAY = 2048;     // tamanho do mapa real
 
         PilhaLista<Caminho> melhorCaminho;          // pilha que guarda o melhor caminho entre duas cidades
-        Arvore<Cidade> arvore;                  // arvore binária para armazenar as cidades
-        int[,] adjacencia;                  // matriz de adjacência para guardas as distancias 
+        Arvore<Cidade> arvore;                    // arvore binária para armazenar as cidades
+        Grafo grafo;
 
         public Form1()
         {
@@ -39,11 +39,11 @@ namespace apCaminhosMarte
                 {
                     IniciarArvore(new StreamReader(dlgArquivo.FileName, Encoding.Default, true));       // preenchemos a arvore com as cidades
 
-                    int tamanhoMatriz = arvore.QuantosDados;                // guardamos numa variavel a quantidade de cidades
-                    adjacencia = new int[tamanhoMatriz, tamanhoMatriz];     // instancia a matriz
+                    int qtdCidade = arvore.QuantosDados;                // guardamos numa variavel a quantidade de cidades
+                    grafo  = new Grafo(qtdCidade, qtdCidade);     // instancia o grafo
                     LerCaminhos(new StreamReader("CaminhosEntreCidadesMarte.txt"));         // inicia a leitura do arquivo dos caminhos
 
-                    CarregarListBox();                      ///
+                    CarregarListBox();                     
 
                     pbMapa.Invalidate();
                     pnlArvore.Invalidate();
@@ -77,7 +77,7 @@ namespace apCaminhosMarte
             while (!arq.EndOfStream)
             {
                 Caminho caminho = Caminho.LerRegistro(arq);
-                adjacencia[caminho.IdOrigem, caminho.IdDestino] = caminho.Distancia;
+                grafo[caminho.IdOrigem, caminho.IdDestino] = caminho.Distancia;
             }
             arq.Close();
         }
@@ -193,74 +193,9 @@ namespace apCaminhosMarte
 
         private bool AcharCaminhos(int origem, int destino, PilhaLista<Caminho> pilhaCaminho)
         {
-            int quantasCidades = arvore.QuantosDados;
-
-            bool[] saidasDoDestinoFinal = new bool[quantasCidades];
-            bool[,] jaPassouPelaCidade = new bool[quantasCidades, quantasCidades];
-
-            for (int indice = 0; indice < saidasDoDestinoFinal.Length; indice++)
-            {
-                jaPassouPelaCidade[indice, indice] = false;
-                saidasDoDestinoFinal[indice] = false;
-            }
-
-            bool acabouOsCaminhos = false;
-
-            PilhaLista<Caminho> aux = new PilhaLista<Caminho>();
-            PilhaLista<Caminho> possiveis = new PilhaLista<Caminho>();
-
-            int entradaAtual = origem;
-            int distanciaAtual = 0;
-
-            while (!acabouOsCaminhos)
-            {
-                for (int saidaAtual = 0; saidaAtual < quantasCidades; saidaAtual++)
-                    if ((distanciaAtual = adjacencia[entradaAtual, saidaAtual]) != 0 && !jaPassouPelaCidade[entradaAtual, saidaAtual] && !saidasDoDestinoFinal[entradaAtual])
-                        aux.Empilhar(new Caminho(entradaAtual, saidaAtual, distanciaAtual));
-
-                if (aux.EstaVazia())
-                    acabouOsCaminhos = true;
-                else
-                {
-                    Caminho umPossivel = aux.Desempilhar();
-
-                    if (umPossivel.IdDestino == destino)
-                    {
-                        pilhaCaminho.Empilhar(umPossivel);
-                        saidasDoDestinoFinal[umPossivel.IdOrigem] = true;
-                        int i = umPossivel.IdOrigem;
-                        while (i != origem)
-                        {
-                            for (int a = 0; a < quantasCidades; a++)
-                                if (jaPassouPelaCidade[a, i])
-                                {
-                                    saidasDoDestinoFinal[a] = true;
-                                    i = a;
-                                    break;
-                                }
-                        }
-                    }
-                    else
-                    {
-                        possiveis.Empilhar(umPossivel);
-                        entradaAtual = umPossivel.IdDestino;
-                        jaPassouPelaCidade[umPossivel.IdOrigem, umPossivel.IdDestino] = true;
-                    }
-                }
-            }
-
-            while (!possiveis.EstaVazia())
-            {
-                Caminho umPossivel = possiveis.Desempilhar();
-
-                if (saidasDoDestinoFinal[umPossivel.IdDestino])
-                {
-                    pilhaCaminho.Empilhar(umPossivel);
-                    saidasDoDestinoFinal[umPossivel.IdOrigem] = true;
-                }
-            }
-
-            return !pilhaCaminho.EstaVazia();
+            if ((pilhaCaminho = grafo.ObterCaminhos(origem, destino, arvore.QuantosDados)) == null)
+                return false;
+            return true;
         }
 
         private void ExibirDgv(DataGridView qualDgv, Caminho insercao)

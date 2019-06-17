@@ -94,6 +94,7 @@ namespace apCaminhosMarte
                     MessageBox.Show("Selecione cidades diferentes!", "Viagem inválida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 else
                 {
+                    grafo.Teste(origem, destino);
                     PilhaLista<Caminho> pilhaCaminho = new PilhaLista<Caminho>();
 
                     dgvMelhorCaminho.RowCount = dgvMelhorCaminho.ColumnCount = dgvCaminhoEncontrado.RowCount = dgvCaminhoEncontrado.ColumnCount = 0;
@@ -193,8 +194,10 @@ namespace apCaminhosMarte
 
         private bool AcharCaminhos(int origem, int destino, PilhaLista<Caminho> pilhaCaminho)
         {
-            if ((pilhaCaminho = grafo.ObterCaminhos(origem, destino, arvore.QuantosDados)) == null)
+            pilhaCaminho = grafo.ObterCaminhos(origem, destino, arvore.QuantosDados);
+            if (pilhaCaminho == null)
                 return false;
+
             return true;
         }
 

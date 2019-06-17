@@ -104,6 +104,136 @@ namespace apCaminhosMarte
             adjacencia = new int[tamanhoLinhas, tamanhoColunas];
         }
 
+
+        private Caminho[] Saidas(int origem, bool[] jaPassou)
+        {
+            var saidas = new List<Caminho>();
+            for (int i = 0; i < 23; i++)
+                if (adjacencia[origem, i] != 0 && !jaPassou[i])
+                    saidas.Add(new Caminho(origem, i, adjacencia[origem, i]));
+
+            return (saidas.Count == 0) ? null : saidas.ToArray();
+        }
+
+
+        public void Teste2(int origem, int destino)
+        {
+            PilhaLista<Caminho>[] possiveis = new PilhaLista<Caminho>[23];
+            List<PilhaLista<Caminho>> caminhos = new List<PilhaLista<Caminho>>();
+            PilhaLista<Caminho> caminhoAtual = new PilhaLista<Caminho>();
+            PilhaLista<Caminho> possibilidades = new PilhaLista<Caminho>();
+            int atual = origem;
+            bool[] jaPassou = new bool[23];
+            int pos = 0;
+
+            for (int i = 0; i < 23; i++)
+            {
+                possiveis[i] = new PilhaLista<Caminho>();
+                jaPassou[i] = false;
+            }
+
+
+            caminhos[pos] = new PilhaLista<Caminho>();
+            jaPassou[origem] = true;
+
+            while (atual != destino)
+            {
+                var saidas = Saidas(atual, jaPassou);
+                if (saidas != null)
+                {
+                    foreach (Caminho c in saidas)
+                        possibilidades.Empilhar(c);
+                }
+                else
+                {
+                    jaPassou[atual] = true;
+                    caminhoAtual.Desempilhar();
+                }
+
+                if (!possibilidades.EstaVazia()) 
+                {
+                    Caminho c = possibilidades.Desempilhar();
+                    if (c.IdDestino == destino)
+                    {
+                        caminhoAtual.Empilhar(c);
+                        caminhos.Add(caminhoAtual.Clone());
+                        if (!possibilidades.EstaVazia())
+                        {
+                            Caminho retorno = possibilidades.Desempilhar();
+                            while (caminhoAtual.OTopo().IdDestino != retorno.IdOrigem)
+                                caminhoAtual.Desempilhar();
+
+                            caminhoAtual.Empilhar(retorno);
+
+                            atual = retorno.IdDestino;
+                        }
+                    }
+                    else
+                    {
+                        if (caminhoAtual.EstaVazia() || caminhoAtual.OTopo().IdDestino == c.IdOrigem)
+                            caminhoAtual.Empilhar(c);
+                        else
+                            possiveis[c.IdDestino].Empilhar(c);
+                        atual = c.IdDestino;
+                        jaPassou[c.IdOrigem] = true;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+
+
+        public void Teste(int origem, int destino)
+        {
+            PilhaLista<Caminho>[] possiveis = new PilhaLista<Caminho>[23];
+            PilhaLista<Caminho>[] caminhos = new PilhaLista<Caminho>[23];
+            bool[] jaPassou = new bool[23];
+            bool[] ehSaida = new bool[23];
+            int pos = 0;
+            for (int i = 0; i < 23; i++)
+            {
+                possiveis[i] = new PilhaLista<Caminho>();
+                caminhos[i] = new PilhaLista<Caminho>();
+                jaPassou[i] = false;
+                ehSaida[i] = false;
+            }
+
+            int atual = origem;
+
+            bool acabou = false;
+            while (!acabou)
+            {
+                PilhaLista<Caminho> aux = Saidas(atual, jaPassou);
+                if (aux == null)
+                    acabou = true;
+                else
+                {
+                    Caminho c = aux.Desempilhar();
+                    if (c.IdDestino == destino)
+                    {
+                        if (!caminhos[pos].EstaVazia())
+                            caminhos[pos].Empilhar(c);
+                        else
+                        {
+
+                        }
+                        pos++;
+                    }
+                    else
+                    {
+                        possiveis[c.IdDestino].Empilhar(c);
+                    }
+                }
+
+            }
+        }
+
+
+
         public PilhaLista<Caminho> ObterCaminhos(int origem, int destino, int qtd)
         {
             /*
@@ -112,6 +242,7 @@ namespace apCaminhosMarte
             List<Cidade[]> caminhos = new List<Cidade[]>();
 
             List<Cidade> percorrido = new List<Cidade>(percorridos);
+
             Aresta<Cidade>[] saidas = grafo.Saidas(origem);
 
             percorrido.Add(origem);

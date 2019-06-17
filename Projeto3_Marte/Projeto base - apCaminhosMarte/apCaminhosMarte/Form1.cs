@@ -14,6 +14,7 @@ namespace apCaminhosMarte
     public partial class Form1 : Form
     {
         const int TAMANHOMAPACOORDENADAX = 4096, TAMANHOMAPACOORDENADAY = 2048;     // tamanho do mapa real
+        
         int selecionado, menor;
         List<PilhaLista<Caminho>> listaCaminhos;
         Arvore<Cidade> arvore;                    // arvore binária para armazenar as cidades
@@ -116,7 +117,7 @@ namespace apCaminhosMarte
                             dgvCaminhoEncontrado.RowCount++;
 
                            
-                            if (dgvCaminhoEncontrado.ColumnCount < aux.Tamanho())
+                            if (dgvCaminhoEncontrado.ColumnCount <= aux.Tamanho())
                                 dgvCaminhoEncontrado.ColumnCount = aux.Tamanho() + 1;
 
                             while(!aux.EstaVazia())
@@ -153,6 +154,9 @@ namespace apCaminhosMarte
             PilhaLista<Caminho> caminhoAtual = new PilhaLista<Caminho>();
 
             PilhaLista<Caminho> aux = new PilhaLista<Caminho>();
+            bool[] jaPassou = new bool[23];
+            for (int i = 0; i < 23; i++)
+                jaPassou[i] = false;
 
             int atual = origem;
 
@@ -162,11 +166,15 @@ namespace apCaminhosMarte
             {
                 int tamanhoAnterior = aux.Tamanho();
                 for (int i = 0; i < 23; i++)
-                    if (grafo[atual, i] != 0)
+                    if (grafo[atual, i] != 0 && !jaPassou[i])
                         aux.Empilhar(new Caminho(atual, i, grafo[atual, i]));
 
-                if (tamanhoAnterior == aux.Tamanho())
-                    disAtual -= caminhoAtual.Desempilhar().Distancia;
+                if (!aux.EstaVazia() && tamanhoAnterior == aux.Tamanho())
+                {
+                    Caminho cam = caminhoAtual.Desempilhar();
+                    disAtual -= cam.Distancia;
+                    jaPassou[cam.IdDestino] = true;
+                }
 
                 if (aux.EstaVazia())
                     acabou = true;
@@ -176,25 +184,28 @@ namespace apCaminhosMarte
 
                     while (!caminhoAtual.EstaVazia() && caminhoAtual.OTopo().IdDestino != c.IdOrigem)
                     {
-                        disAtual -= caminhoAtual.Desempilhar().Distancia;
+                        Caminho cam = caminhoAtual.Desempilhar();
+                        disAtual -= cam.Distancia;
+                        jaPassou[cam.IdDestino] = false;
                     }
-                        
 
                     caminhoAtual.Empilhar(c);
                     disAtual += c.Distancia;
 
                     if (c.IdDestino != destino)
+                    {
+                        jaPassou[c.IdOrigem] = true;
                         atual = c.IdDestino;
+                    }
                     else
                     {
                         listaCaminhos.Add(caminhoAtual.Clone());
-                        if(disAtual < menorDistancia)
+                        if (disAtual < menorDistancia)
                         {
                             menor = listaCaminhos.Count - 1;
                             menorDistancia = disAtual;
-                            disAtual = 0;
                         }
-                           
+
                         if (aux.EstaVazia())
                             acabou = true;
                         else
@@ -202,22 +213,41 @@ namespace apCaminhosMarte
                             Caminho retorno = aux.Desempilhar();
 
                             while (!caminhoAtual.EstaVazia() && caminhoAtual.OTopo().IdDestino != retorno.IdOrigem)
-                                disAtual -= caminhoAtual.Desempilhar().Distancia;
+                            {
+                                Caminho cam = caminhoAtual.Desempilhar();
+                                disAtual -= cam.Distancia;
+                                jaPassou[cam.IdDestino] = false;
+                            }
 
                             caminhoAtual.Empilhar(retorno);
+                            jaPassou[retorno.IdDestino] = true;
                             disAtual += retorno.Distancia;
 
-                            if (retorno.IdDestino == destino)
+                            while(retorno.IdDestino == destino && !acabou)
                             {
                                 listaCaminhos.Add(caminhoAtual.Clone());
-                                acabou = true;
 
                                 if (disAtual < menorDistancia)
                                 {
                                     menor = listaCaminhos.Count - 1;
                                     menorDistancia = disAtual;
-                                    disAtual = 0;
                                 }
+
+                                if (!aux.EstaVazia())
+                                {
+                                    retorno = aux.Desempilhar();
+                                    while (!caminhoAtual.EstaVazia() && caminhoAtual.OTopo().IdDestino != retorno.IdOrigem)
+                                    {
+                                        Caminho cam = caminhoAtual.Desempilhar();
+                                        disAtual -= cam.Distancia;
+                                        jaPassou[cam.IdDestino] = false;
+                                    }
+
+                                    caminhoAtual.Empilhar(retorno);
+                                    disAtual += retorno.Distancia;
+                                }
+                                else
+                                    acabou = true;
                             }
 
                             atual = retorno.IdDestino;
@@ -269,8 +299,25 @@ namespace apCaminhosMarte
                     Cidade destino = arvore.ExisteDado(new Cidade(possivelCaminho.IdDestino));
                     using (var pen = new Pen(Color.FromArgb(211, 47, 47), 4))
                     {
-                        pen.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
-                        g.DrawLine(pen, origem.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX + 3, origem.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY + 3, destino.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX + 3, destino.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY + 3);
+                        
+                        int origemX = origem.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX + 5;
+                        int origemY = origem.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY + 3;
+                        int destinoX = destino.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX +3;
+                        int destinoY = destino.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY +5;
+
+
+                        
+                        if (destinoX - origemX > 2 * pbMapa.Width / 4)
+                        {
+                            g.DrawLine(pen, origemX, origemY, 0, origemY);
+                            pen.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
+                            g.DrawLine(pen, pbMapa.Width, origemY, destinoX, destinoY);
+                        }
+                        else
+                        {
+                            pen.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
+                            g.DrawLine(pen, origemX,origemY, destinoX,  destinoY);
+                        }
                     }
                 }
             }

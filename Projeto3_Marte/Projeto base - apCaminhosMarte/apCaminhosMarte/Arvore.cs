@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+//ISABELA PAULINO DE SOUZA 18189 GUSTAVO FERRREIRA GITZEL 18194
+
 namespace apCaminhosMarte
 {
     public class Arvore<Dado> where Dado : IComparable<Dado>
@@ -115,6 +117,14 @@ namespace apCaminhosMarte
             return Altura(Raiz);
         }
 
+
+        /*
+          Método privado que desenha um nó da árvore em um panel. É recursivo e ocorre enquanto o nó que será desenhado não for nulo.
+          Por ser recursivo acaba desenhando a árvore inteira.
+          @params bool que determina se aquele é o primeiro nó a ser desenhado, um NoArvore<Dado> que será desenhado dois inteiros
+          x e y que são coordenadas de onde será desenhado, três double que determinam respectivamente a angulação o incremento e o 
+          comprimento do círculo e Graphics que desenha a árvore. 
+        */
         private void DesenharArvore(bool primeiro, NoArvore<Dado> atual, int x, int y, double angulo, double i, double compr, Graphics g)
         {
             int xf, yf;
@@ -143,16 +153,20 @@ namespace apCaminhosMarte
             }
         }
 
+
+        /*
+          Método público que incia o método recursivo que desenha a árvore.
+          @params o Graphics do panel que desenhará a árvore e o tamanho deste panel.
+        */
         public void DesenharArvore(Graphics g, int tamanho)
         {
             DesenharArvore(true, raiz, tamanho, 0, Math.PI / 2, Math.PI / 2.5, 350, g);
-        }
+        } 
 
-        public void PreOrdem(Action<Dado> action)
-        {
-            Percorrer(action, raiz);
-        }
-        
+        /*
+         Método privado que percorre, de forma recursiva, a árvore em PreOrdem e realiza uma action passada como parâmetro.
+         @params a Action que será feita em cima do Dado durante o percurso e o nó atual. 
+       */
         private void Percorrer(Action<Dado>action, NoArvore<Dado> atual)
         {
             if (atual != null)
@@ -163,11 +177,19 @@ namespace apCaminhosMarte
             }
         }
 
-        public void InOrdem(Action<Dado> action)
+        /*
+         Método público que incia o método recursivo que percorre a árvore em PreOrdem.
+         @params a Action que será feita em cima do Dado durante o percurso. 
+       */
+        public void PreOrdem(Action<Dado> action)
         {
-            PercorrerInOrdem(action, raiz);
+            Percorrer(action, raiz);
         }
 
+        /*
+        Método privado que percorre, de forma recursiva, a árvore em InOrdem e realiza uma action passada como parâmetro.
+        @params a Action que será feita em cima do Dado durante o percurso e o nó atual. 
+        */
         private void PercorrerInOrdem(Action<Dado>action, NoArvore<Dado> atual)
         {
             if(atual != null)
@@ -176,6 +198,15 @@ namespace apCaminhosMarte
                 action(atual.Info);
                 PercorrerInOrdem(action, atual.Dir); 
             }
+        }
+
+        /*
+         Método público que incia o método recursivo que percorre a árvore em InOrdem.
+         @params a Action que será feita em cima do Dado durante o percurso. 
+       */
+        public void InOrdem(Action<Dado> action)
+        {
+            PercorrerInOrdem(action, raiz);
         }
 
 

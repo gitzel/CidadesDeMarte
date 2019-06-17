@@ -33,6 +33,9 @@ namespace apCaminhosMarte
 
         private void LeituraDosArquivos()       // metodo para ler arquivos
         {
+
+          
+
             try
             {
                 if (dlgArquivo.ShowDialog() == DialogResult.OK)     // caso o usuario escolha o arquivo correto
@@ -94,92 +97,26 @@ namespace apCaminhosMarte
                     MessageBox.Show("Selecione cidades diferentes!", "Viagem inválida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 else
                 {
-                    grafo.Teste(origem, destino);
-                    PilhaLista<Caminho> pilhaCaminho = new PilhaLista<Caminho>();
+                    List<PilhaLista<Caminho>> listaCaminhos = new List<PilhaLista<Caminho>>();
 
                     dgvMelhorCaminho.RowCount = dgvMelhorCaminho.ColumnCount = dgvCaminhoEncontrado.RowCount = dgvCaminhoEncontrado.ColumnCount = 0;
 
-                    if (AcharCaminhos(origem, destino, pilhaCaminho))
+                    if (AcharCaminhos(origem, destino, listaCaminhos))
                     {
-                        int qtdMaxima = arvore.QuantosDados;
-
-                        PilhaLista<Caminho>[] caminhosPossiveis = new PilhaLista<Caminho>[qtdMaxima];
-
-                        for (int indice = 0; indice < caminhosPossiveis.Length; indice++)
-                            caminhosPossiveis[indice] = new PilhaLista<Caminho>();
-
-                        while (!pilhaCaminho.EstaVazia())
+                        foreach(PilhaLista<Caminho> caminho in listaCaminhos)
                         {
-                            Caminho umCaminho = pilhaCaminho.Desempilhar();
-
-                            caminhosPossiveis[umCaminho.IdDestino].Empilhar(umCaminho);
-                        }
-
-                        int menor = int.MaxValue;
-                        int onde = destino;
-
-                        PilhaLista<Caminho>[] caminhos = new PilhaLista<Caminho>[qtdMaxima];
-
-                        for(int i = 0; i< caminhos.Length; i++)
-                        {
-                            caminhos[i] = new PilhaLista<Caminho>();
-                        }
-
-                        PilhaLista<Caminho> caminhosAnteriores = new PilhaLista<Caminho>();
-
-
-                        bool b = true;
-                       while(true)
-                       {
-                            while(true)
-                            {
-                                Caminho p = caminhosPossiveis[onde].Desempilhar();
-                                int entrada = p.IdOrigem;
-
-                                if(!caminhos[onde].EstaVazia())
-                                {
-                                    caminhos[entrada] = caminhos[onde].Clone();
-                                }
-
-                                caminhos[entrada].Empilhar(p);
-                                onde = entrada;
-                                break;
-                            }
-
-                            // menor e exibir
-
                             bool primeiro = true;
-
-                            while (!caminhos[onde].EstaVazia())
+                            PilhaLista<Caminho> aux = caminho.Clone();
+                            dgvCaminhoEncontrado.RowCount++;
+                            while(!aux.EstaVazia())
                             {
-                                Caminho a = caminhos[onde].Desempilhar();
-                                if (caminhosPossiveis[a.IdDestino].EstaVazia() && primeiro)
-                                {
-                                    caminhosAnteriores.Empilhar(a);
-                                    primeiro = false;
-                                }
-                                else
-                                    caminhosPossiveis[a.IdDestino].Empilhar(a);
+                                ExibirDgv(dgvCaminhoEncontrado, aux.Desempilhar(), primeiro);
+                                primeiro = false;
                             }
+                               
+                        }
 
-                            while (!caminhosAnteriores.EstaVazia() && b)
-                            {
-                                Caminho anterior = caminhosAnteriores.Desempilhar();
-                                if (caminhosPossiveis[anterior.IdDestino].Tamanho() <= 1)
-                                    caminhosPossiveis[anterior.IdDestino].Empilhar(anterior);
-                                else
-                                    caminhosAnteriores.Empilhar(anterior);
-                            }
-
-                            b = false;
-
-                            onde = destino;
-                           
-                            break;
-                       }
-
-
-                        pbMapa.Invalidate();
+                       pbMapa.Invalidate();
                     }
                     else
                     {
@@ -192,53 +129,103 @@ namespace apCaminhosMarte
             }
         }
 
-        private bool AcharCaminhos(int origem, int destino, PilhaLista<Caminho> pilhaCaminho)
+        private bool AcharCaminhos(int origem, int destino, List<PilhaLista<Caminho>> pilhaCaminho)
         {
-            pilhaCaminho = grafo.ObterCaminhos(origem, destino, arvore.QuantosDados);
-            if (pilhaCaminho == null)
-                return false;
+            List<PilhaLista<Caminho>> caminhos = new List<PilhaLista<Caminho>>();
 
-            return true;
+            int menor = int.MaxValue, disAtual = 0;
+            PilhaLista<Caminho> caminhoAtual = new PilhaLista<Caminho>();
+
+            PilhaLista<Caminho> aux = new PilhaLista<Caminho>();
+
+            int atual = origem;
+
+            bool acabou = false;
+
+            while (!acabou)
+            {
+                int tamanhoAnterior = aux.Tamanho();
+                for (int i = 0; i < 23; i++)
+                    if (grafo[atual, i] != 0)
+                        aux.Empilhar(new Caminho(atual, i, grafo[atual, i]));
+
+                if (tamanhoAnterior == aux.Tamanho())
+                    disAtual -= caminhoAtual.Desempilhar().Distancia;
+
+                if (aux.EstaVazia())
+                    acabou = true;
+                else
+                {
+                    Caminho c = aux.Desempilhar();
+
+                    while (!caminhoAtual.EstaVazia() && caminhoAtual.OTopo().IdDestino != c.IdOrigem)
+                    {
+                        disAtual -= caminhoAtual.Desempilhar().Distancia;
+                    }
+                        
+
+                    caminhoAtual.Empilhar(c);
+                    disAtual += c.Distancia;
+
+                    if (c.IdDestino != destino)
+                        atual = c.IdDestino;
+                    else
+                    {
+                        caminhos.Add(caminhoAtual.Clone());
+                        if(disAtual < menor)
+                        {
+                            menor = disAtual;
+                            melhorCaminho = caminhoAtual.Clone();
+                            disAtual = 0;
+                        }
+                           
+                        if (aux.EstaVazia())
+                            acabou = true;
+                        else
+                        {
+                            Caminho retorno = aux.Desempilhar();
+
+                            while (!caminhoAtual.EstaVazia() && caminhoAtual.OTopo().IdDestino != retorno.IdOrigem)
+                                disAtual -= caminhoAtual.Desempilhar().Distancia;
+
+                            caminhoAtual.Empilhar(retorno);
+                            disAtual += retorno.Distancia;
+
+                            if (retorno.IdDestino == destino)
+                            {
+                                caminhos.Add(caminhoAtual.Clone());
+                                acabou = true;
+
+                                if (disAtual < menor)
+                                {
+                                    menor = disAtual;
+                                    melhorCaminho = caminhoAtual.Clone();
+                                    disAtual = 0;
+                                }
+                            }
+
+                            atual = retorno.IdDestino;
+                        }
+                    }
+                }
+            }
+
+            return caminhos.Count != 0;
         }
 
-        private void ExibirDgv(DataGridView qualDgv, Caminho insercao)
+        private void ExibirDgv(DataGridView qualDgv, Caminho insercao, bool primeiro)
         {
-            bool podeEscrever = true;
-
-            int qualLinha = -1, qualColuna = -1;
-
-            for (int indice = 0; indice < qualDgv.RowCount; indice++)
-                if (qualDgv.Rows[indice].HeaderCell.Value.ToString() == insercao.IdOrigem + "")
-                {
-                    podeEscrever = false;
-                    qualLinha = indice;
-                }
-
-            if (podeEscrever)
+            if(!primeiro)
             {
-                qualLinha = qualDgv.RowCount;
-                qualDgv.Rows[qualDgv.RowCount++].HeaderCell.Value = insercao.IdOrigem + "";
+                qualDgv[, qualDgv.RowCount - 1].Value = insercao.IdDestino;
             }
-
-            podeEscrever = true;
-
-            for (int indice = 0; indice < qualDgv.ColumnCount; indice++)
-                if (qualDgv.Columns[indice].HeaderText == insercao.IdDestino + "")
-                {
-                    qualColuna = indice;
-                    podeEscrever = false;
-                }
-
-
-            if (podeEscrever)
+            else
             {
-                qualColuna = qualDgv.ColumnCount - 1;
-                qualDgv.Columns[qualColuna].HeaderText = insercao.IdDestino + "";
-                qualDgv.Columns[qualColuna].SortMode = DataGridViewColumnSortMode.NotSortable;
-                qualDgv.ColumnCount++;
-            }
+                qualDgv[0, qualDgv.RowCount - 1].Value = insercao.IdOrigem;
+               
 
-            qualDgv[qualColuna, qualLinha].Value = insercao.Distancia.ToString();
+            }
+            
         }
 
         private void pnlArvore_Paint(object sender, PaintEventArgs e)
@@ -267,6 +254,7 @@ namespace apCaminhosMarte
             {
                 dgvMelhorCaminho.RowCount = dgvMelhorCaminho.ColumnCount = 0;
                 PilhaLista<Caminho> aux = melhorCaminho.Clone();
+               
                 while (!aux.EstaVazia())
                 {
                     Caminho possivelCaminho = aux.Desempilhar();

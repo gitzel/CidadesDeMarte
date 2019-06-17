@@ -13,11 +13,30 @@ namespace apCaminhosMarte
 {
     public partial class Form1 : Form
     {
-        const int TAMANHOMAPACOORDENADAX = 4096, TAMANHOMAPACOORDENADAY = 2048;     // tamanho do mapa real
+
+        /*
+         Constantes inteiras que armazenam a largura e a altura real do mapa de marte.
+        */
+        const int TAMANHOX = 4096, TAMANHOY = 2048;   
         
+        /*
+         Variáveis inteiras que indicam qual posição da lista de caminhos está o menor caminho e qual caminho está selecionado. 
+        */
         int selecionado, menor;
+
+        /*
+          Lista que irá armazenar todos os caminhos entre as cidades.
+        */
         List<PilhaLista<Caminho>> listaCaminhos;
-        Arvore<Cidade> arvore;                    // arvore binária para armazenar as cidades
+
+        /*
+          Árvore que armazena todas cidades do mapa.
+        */
+        Arvore<Cidade> arvore;
+
+        /*
+          Grafo usado para guardar as adjacência das cidades.
+        */
         Grafo grafo;
 
         public Form1()
@@ -25,30 +44,39 @@ namespace apCaminhosMarte
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e) // quando carregar o formulário
+        /*
+         Quando o formulário carrega inicia a lista de caminhos vazio, instância a arvore de cidades e atribui um valor 
+         negativo para selecionado e menor. Chama o método para ler os arquivos.
+        */
+        private void Form1_Load(object sender, EventArgs e) 
         {
             listaCaminhos = null;
-            arvore = new Arvore<Cidade>();              // instanciamos a arvore
-            selecionado = -1;           // zeramos o menor caminho
-            LeituraDosArquivos();           // fazemos a leitura dos arquivos
+            arvore = new Arvore<Cidade>();            
+            menor = selecionado = -1;         
+            LeituraDosArquivos();          
         }
 
-        private void LeituraDosArquivos()       // metodo para ler arquivos
+        /*
+          Método que lê um arquivo de cidades escolhido pelo usuário e inclui cada uma delas na árvore. Instanciamos o grafo
+          com uma matriz de dimensões iguais a quantidade de cidades. Chamamo os métodos para ler os caminhos, carregar os dados no 
+          listBox e chama o evento paint do mapa para desenhar pontos nas cidades. 
+          @throws caso não consiga ler o arquivo.
+        */
+        private void LeituraDosArquivos()       
         {
             try
             {
-                if (dlgArquivo.ShowDialog() == DialogResult.OK)     // caso o usuario escolha o arquivo correto
+                if (dlgArquivo.ShowDialog() == DialogResult.OK)     
                 {
-                    IniciarArvore(new StreamReader(dlgArquivo.FileName, Encoding.Default, true));       // preenchemos a arvore com as cidades
+                    ConstruirArvore(new StreamReader(dlgArquivo.FileName, Encoding.Default, true));      
 
-                    int qtdCidade = arvore.QuantosDados;                // guardamos numa variavel a quantidade de cidades
-                    grafo  = new Grafo(qtdCidade, qtdCidade);     // instancia o grafo
+                    int qtdCidade = arvore.QuantosDados;                
+                    grafo  = new Grafo(qtdCidade, qtdCidade);   
                     LerCaminhos(new StreamReader("CaminhosEntreCidadesMarte.txt"));         // inicia a leitura do arquivo dos caminhos
 
                     CarregarListBox();                     
 
                     pbMapa.Invalidate();
-                    pnlArvore.Invalidate();
                 }
             }
             catch (Exception)
@@ -57,7 +85,11 @@ namespace apCaminhosMarte
             }
         }
 
-        private void IniciarArvore(StreamReader arquivo)
+        /*
+          Constrói uma árvore com as cidades baseado em um arquivo recebido com parâmetro.
+          @params um StreamReader que contém o arquivo que será lido.
+        */
+        private void ConstruirArvore(StreamReader arquivo)
         {
             while (!arquivo.EndOfStream)
                 arvore.Incluir(Cidade.LerRegistro(arquivo));
@@ -65,6 +97,10 @@ namespace apCaminhosMarte
             arquivo.Close();
         }
 
+        /*
+             Adiciona aos dois listBox os dados de cidade contidos na árvore em uma sequência InOrdem de forma que os
+             dados acabam ordenados.
+        */
         private void CarregarListBox()
         {
             arvore.InOrdem((Cidade c) =>
@@ -74,6 +110,9 @@ namespace apCaminhosMarte
             });
         }
 
+        /*
+           Lê os caminhos de um arquivo e adiciona na matriz do grafo. 
+        */
         private void LerCaminhos(StreamReader arq)
         {
             while (!arq.EndOfStream)
@@ -84,6 +123,11 @@ namespace apCaminhosMarte
             arq.Close();
         }
 
+        /*
+         Evento click do botão de buscar caminhos que chama os métodos para encontrar um caminho e exibí-lo.
+         Avisa o usuário se ele selecionar como origem e destino a mesma cidade e se não houver um caminho possível entre 
+         duas cidades por meio de uma MessageBox.
+        */
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
             if (lsbOrigem.SelectedIndex >= 0 && lsbDestino.SelectedIndex >= 0)
@@ -101,40 +145,7 @@ namespace apCaminhosMarte
                     dgvMelhorCaminho.RowCount = dgvMelhorCaminho.ColumnCount = dgvCaminhoEncontrado.RowCount = dgvCaminhoEncontrado.ColumnCount = 0;
 
                     if (listaCaminhos.Count != 0)
-                    {
-                        foreach(PilhaLista<Caminho> caminho in listaCaminhos)
-                        {
-                            int posicao = 0;
-                            PilhaLista<Caminho> aux = caminho.Clone();
-                            aux.Inverter();
-
-                            if (dgvCaminhoEncontrado.RowCount == menor)
-                            {
-                                dgvMelhorCaminho.RowCount++;
-                                dgvMelhorCaminho.ColumnCount = aux.Tamanho() + 1;
-                            }
-
-                            dgvCaminhoEncontrado.RowCount++;
-
-                           
-                            if (dgvCaminhoEncontrado.ColumnCount <= aux.Tamanho())
-                                dgvCaminhoEncontrado.ColumnCount = aux.Tamanho() + 1;
-
-                            while(!aux.EstaVazia())
-                            {
-                                Caminho c = aux.Desempilhar();
-                                if (dgvCaminhoEncontrado.RowCount - 1 == menor)
-                                    ExibirDgv(dgvMelhorCaminho, c, posicao);
-                                
-                                ExibirDgv(dgvCaminhoEncontrado, c, posicao);
-                                posicao++;
-                            } 
-                        }
-
-                        selecionado = menor;
-                        dgvCaminhoEncontrado.Rows[selecionado].Selected = true;
-                        pbMapa.Invalidate();
-                    }
+                        MostrarCaminhos();
                     else
                     {
                         selecionado = -1;
@@ -146,14 +157,20 @@ namespace apCaminhosMarte
             }
         }
 
+        /*
+         Método que utiliza backtraking e pilhas para encontrar todos os caminhos entre dois pontos. Armazena todos os caminhos
+         em uma lista e determina qual posição guarda o menor.
+         @params dois inteiros sendo que a origem a cidade de onde estamos saindo e o destino a cidade onde queremos chegar.
+        */
         private void AcharCaminhos(int origem, int destino)
         {
-           listaCaminhos = new List<PilhaLista<Caminho>>();
+            listaCaminhos = new List<PilhaLista<Caminho>>();
 
             int menorDistancia = int.MaxValue, disAtual = 0;
             PilhaLista<Caminho> caminhoAtual = new PilhaLista<Caminho>();
 
             PilhaLista<Caminho> aux = new PilhaLista<Caminho>();
+
             bool[] jaPassou = new bool[23];
             for (int i = 0; i < 23; i++)
                 jaPassou[i] = false;
@@ -211,7 +228,7 @@ namespace apCaminhosMarte
                         else
                         {
                             Caminho retorno = aux.Desempilhar();
-
+                     
                             while (!caminhoAtual.EstaVazia() && caminhoAtual.OTopo().IdDestino != retorno.IdOrigem)
                             {
                                 Caminho cam = caminhoAtual.Desempilhar();
@@ -257,6 +274,50 @@ namespace apCaminhosMarte
             }
         }
 
+        /*
+          Exibe todos os caminhos em um dataGridView de caminhos e o menor caminho em um outro.
+        */
+        private void MostrarCaminhos()
+        {
+            foreach (PilhaLista<Caminho> caminho in listaCaminhos)
+            {
+                int posicao = 0;
+                PilhaLista<Caminho> aux = caminho.Clone();
+                aux.Inverter();
+
+                if (dgvCaminhoEncontrado.RowCount == menor)
+                {
+                    dgvMelhorCaminho.RowCount++;
+                    dgvMelhorCaminho.ColumnCount = aux.Tamanho() + 1;
+                }
+
+                dgvCaminhoEncontrado.RowCount++;
+
+
+                if (dgvCaminhoEncontrado.ColumnCount <= aux.Tamanho())
+                    dgvCaminhoEncontrado.ColumnCount = aux.Tamanho() + 1;
+
+                while (!aux.EstaVazia())
+                {
+                    Caminho c = aux.Desempilhar();
+                    if (dgvCaminhoEncontrado.RowCount - 1 == menor)
+                        ExibirDgv(dgvMelhorCaminho, c, posicao);
+
+                    ExibirDgv(dgvCaminhoEncontrado, c, posicao);
+                    posicao++;
+                }
+            }
+
+            selecionado = menor;
+            dgvCaminhoEncontrado.Rows[selecionado].Selected = true;
+            pbMapa.Invalidate();
+        }
+
+        /*
+          Adiciona um caminho a um indice determinado no dataGridView.
+          @params o DataGridView que iremos modificar, o caminho que iremos inserir e um inteiro chamado indice que determina
+          que posição ou coluna será incluido.
+        */
         private void ExibirDgv(DataGridView qualDgv, Caminho insercao, int indice)
         {
             if(indice == 0 )
@@ -265,6 +326,10 @@ namespace apCaminhosMarte
             qualDgv[++indice, qualDgv.RowCount - 1].Value = insercao.IdDestino;
         }
 
+        /*
+         Evento paint do panel que exibirá a árvore. Chama o método público de desenhar árvore e passa como parâmetro o Graphics
+         do panel e metade da largura dele para começar desenhando no meio.
+        */
         private void pnlArvore_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -272,13 +337,17 @@ namespace apCaminhosMarte
             arvore.DesenharArvore(g, tamanho);
         }
 
+        /*
+         Evento paint do pictureBox mapa que exibirá as cidades e os caminhos. Desenha os pontos em cada cidade, seguindo
+         PreOrdem da Árvore. Também exibe um caminho selecionado pelo usuário caso ele não seja negativo. 
+        */
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             arvore.PreOrdem((Cidade c) =>
             {
-                float coordenadaX = c.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX;
-                float coordenadaY = c.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY;
+                float coordenadaX = c.CoordenadaX * pbMapa.Width / TAMANHOX;
+                float coordenadaY = c.CoordenadaY * pbMapa.Height / TAMANHOY;
                 g.FillEllipse(
                  new SolidBrush(Color.Black),
                  coordenadaX, coordenadaY, 10f, 10f
@@ -287,7 +356,7 @@ namespace apCaminhosMarte
                              new SolidBrush(Color.FromArgb(32, 32, 32)), coordenadaX + 12, coordenadaY - 10);
             });
 
-            if (selecionado != -1)
+            if (selecionado >= 0)
             {
                 PilhaLista<Caminho> aux = listaCaminhos[selecionado].Clone();
                
@@ -300,10 +369,10 @@ namespace apCaminhosMarte
                     using (var pen = new Pen(Color.FromArgb(211, 47, 47), 4))
                     {
                         
-                        int origemX = origem.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX + 5;
-                        int origemY = origem.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY + 3;
-                        int destinoX = destino.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX +3;
-                        int destinoY = destino.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY +5;
+                        int origemX = origem.CoordenadaX * pbMapa.Width / TAMANHOX + 5;
+                        int origemY = origem.CoordenadaY * pbMapa.Height / TAMANHOY + 3;
+                        int destinoX = destino.CoordenadaX * pbMapa.Width / TAMANHOX +3;
+                        int destinoY = destino.CoordenadaY * pbMapa.Height / TAMANHOY +5;
 
 
                         
@@ -323,6 +392,10 @@ namespace apCaminhosMarte
             }
         }
 
+        /*
+           Evento que muda o valor do selecionado dependo da linha do dataGridView que foi selecionado. Chama o evento paint
+           do pictureBox mapa para desenhar o caminho selecionado.
+        */
         private void dgvCaminhoEncontrado_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvCaminhoEncontrado.SelectedRows.Count != 0)
@@ -332,6 +405,9 @@ namespace apCaminhosMarte
             }
         }
 
+        /*
+          Evento click do TollStripMenu que chama o método de ler arquivos.
+        */
         private void cidadesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LeituraDosArquivos();

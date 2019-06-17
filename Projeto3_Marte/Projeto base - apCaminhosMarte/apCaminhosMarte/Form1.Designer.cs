@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpRotas = new System.Windows.Forms.TabPage();
@@ -92,7 +93,7 @@
             // btnBuscar
             // 
             this.btnBuscar.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnBuscar.Location = new System.Drawing.Point(1348, 11);
+            this.btnBuscar.Location = new System.Drawing.Point(1260, 17);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Size = new System.Drawing.Size(89, 84);
             this.btnBuscar.TabIndex = 11;
@@ -104,13 +105,26 @@
             // 
             this.dgvMelhorCaminho.AllowUserToAddRows = false;
             this.dgvMelhorCaminho.AllowUserToDeleteRows = false;
+            this.dgvMelhorCaminho.AllowUserToResizeColumns = false;
+            this.dgvMelhorCaminho.AllowUserToResizeRows = false;
             this.dgvMelhorCaminho.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvMelhorCaminho.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvMelhorCaminho.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvMelhorCaminho.Location = new System.Drawing.Point(851, 406);
+            this.dgvMelhorCaminho.ColumnHeadersVisible = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvMelhorCaminho.DefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvMelhorCaminho.Location = new System.Drawing.Point(851, 484);
             this.dgvMelhorCaminho.Name = "dgvMelhorCaminho";
             this.dgvMelhorCaminho.ReadOnly = true;
+            this.dgvMelhorCaminho.RowHeadersVisible = false;
             this.dgvMelhorCaminho.RowHeadersWidth = 50;
-            this.dgvMelhorCaminho.Size = new System.Drawing.Size(498, 100);
+            this.dgvMelhorCaminho.Size = new System.Drawing.Size(498, 22);
             this.dgvMelhorCaminho.TabIndex = 10;
             // 
             // dgvCaminhoEncontrado
@@ -121,18 +135,22 @@
             this.dgvCaminhoEncontrado.AllowUserToResizeRows = false;
             this.dgvCaminhoEncontrado.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvCaminhoEncontrado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCaminhoEncontrado.ColumnHeadersVisible = false;
             this.dgvCaminhoEncontrado.Location = new System.Drawing.Point(851, 147);
+            this.dgvCaminhoEncontrado.MultiSelect = false;
             this.dgvCaminhoEncontrado.Name = "dgvCaminhoEncontrado";
             this.dgvCaminhoEncontrado.ReadOnly = true;
             this.dgvCaminhoEncontrado.RowHeadersWidth = 50;
-            this.dgvCaminhoEncontrado.Size = new System.Drawing.Size(498, 240);
+            this.dgvCaminhoEncontrado.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvCaminhoEncontrado.Size = new System.Drawing.Size(498, 318);
             this.dgvCaminhoEncontrado.TabIndex = 9;
+            this.dgvCaminhoEncontrado.SelectionChanged += new System.EventHandler(this.dgvCaminhoEncontrado_SelectionChanged);
             // 
             // label4
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(851, 390);
+            this.label4.Location = new System.Drawing.Point(851, 468);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(82, 13);
             this.label4.TabIndex = 7;
@@ -213,7 +231,7 @@
             this.tpArvore.Location = new System.Drawing.Point(4, 22);
             this.tpArvore.Name = "tpArvore";
             this.tpArvore.Padding = new System.Windows.Forms.Padding(3);
-            this.tpArvore.Size = new System.Drawing.Size(1552, 512);
+            this.tpArvore.Size = new System.Drawing.Size(1359, 512);
             this.tpArvore.TabIndex = 1;
             this.tpArvore.Text = "Árvore de Cidades";
             this.tpArvore.UseVisualStyleBackColor = true;
@@ -223,7 +241,7 @@
             this.pnlArvore.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlArvore.Location = new System.Drawing.Point(3, 3);
             this.pnlArvore.Name = "pnlArvore";
-            this.pnlArvore.Size = new System.Drawing.Size(1546, 506);
+            this.pnlArvore.Size = new System.Drawing.Size(1353, 506);
             this.pnlArvore.TabIndex = 0;
             this.pnlArvore.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlArvore_Paint);
             // 

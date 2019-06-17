@@ -14,8 +14,8 @@ namespace apCaminhosMarte
     public partial class Form1 : Form
     {
         const int TAMANHOMAPACOORDENADAX = 4096, TAMANHOMAPACOORDENADAY = 2048;     // tamanho do mapa real
-
-        PilhaLista<Caminho> melhorCaminho;          // pilha que guarda o melhor caminho entre duas cidades
+        int selecionado, menor;
+        List<PilhaLista<Caminho>> listaCaminhos;
         Arvore<Cidade> arvore;                    // arvore binária para armazenar as cidades
         Grafo grafo;
 
@@ -26,16 +26,14 @@ namespace apCaminhosMarte
 
         private void Form1_Load(object sender, EventArgs e) // quando carregar o formulário
         {
+            listaCaminhos = null;
             arvore = new Arvore<Cidade>();              // instanciamos a arvore
-            melhorCaminho = null;           // zeramos o menor caminho
+            selecionado = -1;           // zeramos o menor caminho
             LeituraDosArquivos();           // fazemos a leitura dos arquivos
         }
 
         private void LeituraDosArquivos()       // metodo para ler arquivos
         {
-
-          
-
             try
             {
                 if (dlgArquivo.ShowDialog() == DialogResult.OK)     // caso o usuario escolha o arquivo correto
@@ -97,30 +95,48 @@ namespace apCaminhosMarte
                     MessageBox.Show("Selecione cidades diferentes!", "Viagem inválida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 else
                 {
-                    List<PilhaLista<Caminho>> listaCaminhos = new List<PilhaLista<Caminho>>();
+                    AcharCaminhos(origem, destino);
 
                     dgvMelhorCaminho.RowCount = dgvMelhorCaminho.ColumnCount = dgvCaminhoEncontrado.RowCount = dgvCaminhoEncontrado.ColumnCount = 0;
 
-                    if (AcharCaminhos(origem, destino, listaCaminhos))
+                    if (listaCaminhos.Count != 0)
                     {
                         foreach(PilhaLista<Caminho> caminho in listaCaminhos)
                         {
-                            bool primeiro = true;
+                            int posicao = 0;
                             PilhaLista<Caminho> aux = caminho.Clone();
+                            aux.Inverter();
+
+                            if (dgvCaminhoEncontrado.RowCount == menor)
+                            {
+                                dgvMelhorCaminho.RowCount++;
+                                dgvMelhorCaminho.ColumnCount = aux.Tamanho() + 1;
+                            }
+
                             dgvCaminhoEncontrado.RowCount++;
+
+                           
+                            if (dgvCaminhoEncontrado.ColumnCount < aux.Tamanho())
+                                dgvCaminhoEncontrado.ColumnCount = aux.Tamanho() + 1;
+
                             while(!aux.EstaVazia())
                             {
-                                ExibirDgv(dgvCaminhoEncontrado, aux.Desempilhar(), primeiro);
-                                primeiro = false;
-                            }
-                               
+                                Caminho c = aux.Desempilhar();
+                                if (dgvCaminhoEncontrado.RowCount - 1 == menor)
+                                    ExibirDgv(dgvMelhorCaminho, c, posicao);
+                                
+                                ExibirDgv(dgvCaminhoEncontrado, c, posicao);
+                                posicao++;
+                            } 
                         }
 
-                       pbMapa.Invalidate();
+                        selecionado = menor;
+                        dgvCaminhoEncontrado.Rows[selecionado].Selected = true;
+                        pbMapa.Invalidate();
                     }
                     else
                     {
-                        melhorCaminho = null;
+                        selecionado = -1;
                         pbMapa.Invalidate();
                         dgvMelhorCaminho.RowCount = dgvMelhorCaminho.ColumnCount = 0;
                         MessageBox.Show("Não existe caminho entre essas cidades!", "Viagem inválida", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -129,11 +145,11 @@ namespace apCaminhosMarte
             }
         }
 
-        private bool AcharCaminhos(int origem, int destino, List<PilhaLista<Caminho>> pilhaCaminho)
+        private void AcharCaminhos(int origem, int destino)
         {
-            List<PilhaLista<Caminho>> caminhos = new List<PilhaLista<Caminho>>();
+           listaCaminhos = new List<PilhaLista<Caminho>>();
 
-            int menor = int.MaxValue, disAtual = 0;
+            int menorDistancia = int.MaxValue, disAtual = 0;
             PilhaLista<Caminho> caminhoAtual = new PilhaLista<Caminho>();
 
             PilhaLista<Caminho> aux = new PilhaLista<Caminho>();
@@ -171,11 +187,11 @@ namespace apCaminhosMarte
                         atual = c.IdDestino;
                     else
                     {
-                        caminhos.Add(caminhoAtual.Clone());
-                        if(disAtual < menor)
+                        listaCaminhos.Add(caminhoAtual.Clone());
+                        if(disAtual < menorDistancia)
                         {
-                            menor = disAtual;
-                            melhorCaminho = caminhoAtual.Clone();
+                            menor = listaCaminhos.Count - 1;
+                            menorDistancia = disAtual;
                             disAtual = 0;
                         }
                            
@@ -193,13 +209,13 @@ namespace apCaminhosMarte
 
                             if (retorno.IdDestino == destino)
                             {
-                                caminhos.Add(caminhoAtual.Clone());
+                                listaCaminhos.Add(caminhoAtual.Clone());
                                 acabou = true;
 
-                                if (disAtual < menor)
+                                if (disAtual < menorDistancia)
                                 {
-                                    menor = disAtual;
-                                    melhorCaminho = caminhoAtual.Clone();
+                                    menor = listaCaminhos.Count - 1;
+                                    menorDistancia = disAtual;
                                     disAtual = 0;
                                 }
                             }
@@ -209,23 +225,14 @@ namespace apCaminhosMarte
                     }
                 }
             }
-
-            return caminhos.Count != 0;
         }
 
-        private void ExibirDgv(DataGridView qualDgv, Caminho insercao, bool primeiro)
+        private void ExibirDgv(DataGridView qualDgv, Caminho insercao, int indice)
         {
-            if(!primeiro)
-            {
-                qualDgv[, qualDgv.RowCount - 1].Value = insercao.IdDestino;
-            }
-            else
-            {
-                qualDgv[0, qualDgv.RowCount - 1].Value = insercao.IdOrigem;
-               
+            if(indice == 0 )
+               qualDgv[indice, qualDgv.RowCount - 1].Value = insercao.IdOrigem;
 
-            }
-            
+            qualDgv[++indice, qualDgv.RowCount - 1].Value = insercao.IdDestino;
         }
 
         private void pnlArvore_Paint(object sender, PaintEventArgs e)
@@ -250,10 +257,9 @@ namespace apCaminhosMarte
                              new SolidBrush(Color.FromArgb(32, 32, 32)), coordenadaX + 12, coordenadaY - 10);
             });
 
-            if (melhorCaminho != null)
+            if (selecionado != -1)
             {
-                dgvMelhorCaminho.RowCount = dgvMelhorCaminho.ColumnCount = 0;
-                PilhaLista<Caminho> aux = melhorCaminho.Clone();
+                PilhaLista<Caminho> aux = listaCaminhos[selecionado].Clone();
                
                 while (!aux.EstaVazia())
                 {
@@ -266,10 +272,16 @@ namespace apCaminhosMarte
                         pen.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
                         g.DrawLine(pen, origem.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX + 3, origem.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY + 3, destino.CoordenadaX * pbMapa.Width / TAMANHOMAPACOORDENADAX + 3, destino.CoordenadaY * pbMapa.Height / TAMANHOMAPACOORDENADAY + 3);
                     }
-                    ExibirDgv(dgvMelhorCaminho, possivelCaminho);
                 }
+            }
+        }
 
-                dgvMelhorCaminho.ColumnCount--;
+        private void dgvCaminhoEncontrado_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvCaminhoEncontrado.SelectedRows.Count != 0)
+            {
+                selecionado = dgvCaminhoEncontrado.Rows.IndexOf(dgvCaminhoEncontrado.SelectedRows[0]);
+                pbMapa.Invalidate();
             }
         }
 

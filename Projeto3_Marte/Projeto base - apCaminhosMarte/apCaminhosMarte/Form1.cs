@@ -393,6 +393,18 @@ namespace apCaminhosMarte
             }
         }
 
+
+        /*
+          Evento que muda o valor do selecionado para o menor. Chama o evento paint
+          do pictureBox mapa para desenhar o caminho selecionado.
+        */
+        private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            selecionado = menor;
+            dgvCaminhoEncontrado.Rows[menor].Selected = true;
+            pbMapa.Invalidate();
+        }
+
         /*
            Evento que muda o valor do selecionado dependo da linha do dataGridView que foi selecionado. Chama o evento paint
            do pictureBox mapa para desenhar o caminho selecionado.

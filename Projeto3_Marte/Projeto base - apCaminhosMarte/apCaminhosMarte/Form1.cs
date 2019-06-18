@@ -71,11 +71,18 @@ namespace apCaminhosMarte
                 {
                     ConstruirArvore(new StreamReader(dlgArquivo.FileName, Encoding.Default, true));      
 
-                    int qtdCidade = arvore.QuantosDados;                
-                    grafo  = new Grafo(qtdCidade, qtdCidade);   
-                    LerCaminhos(new StreamReader("CaminhosEntreCidadesMarte.txt"));         // inicia a leitura do arquivo dos caminhos
+                    
+                }
 
-                    CarregarListBox();                     
+                dlgArquivo.Title = "Selecione o arquivo com os caminhos";
+
+                if(dlgArquivo.ShowDialog() == DialogResult.OK)
+                {
+                    int qtdCidade = arvore.QuantosDados;
+                    grafo = new Grafo(qtdCidade, qtdCidade);
+                    LerCaminhos(new StreamReader(dlgArquivo.FileName));         // inicia a leitura do arquivo dos caminhos
+
+                    CarregarListBox();
 
                     pbMapa.Invalidate();
                 }
@@ -321,8 +328,9 @@ namespace apCaminhosMarte
         */
         private void ExibirDgv(DataGridView qualDgv, Caminho insercao, int indice)
         {
-            if(indice == 0 )
-               qualDgv[indice, qualDgv.RowCount - 1].Value = insercao.IdOrigem;
+            if (indice == 0)
+                qualDgv[indice, qualDgv.RowCount - 1].Value = insercao.IdOrigem;
+            
 
             qualDgv[++indice, qualDgv.RowCount - 1].Value = insercao.IdDestino;
         }
@@ -417,13 +425,6 @@ namespace apCaminhosMarte
                 pbMapa.Invalidate();
             }
         }
-
-        /*
-          Evento click do TollStripMenu que chama o método de ler arquivos.
-        */
-        private void cidadesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LeituraDosArquivos();
-        }
+        
     }
 }

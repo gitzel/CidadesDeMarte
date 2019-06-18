@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -366,25 +367,25 @@ namespace apCaminhosMarte
 
                     Cidade origem = arvore.ExisteDado(new Cidade(possivelCaminho.IdOrigem));
                     Cidade destino = arvore.ExisteDado(new Cidade(possivelCaminho.IdDestino));
-                    using (var pen = new Pen(Color.FromArgb(211, 47, 47), 4))
+                    using (var pen = new Pen(Color.FromArgb(211, 47, 47), 2))
                     {
                         
                         int origemX = origem.CoordenadaX * pbMapa.Width / TAMANHOX + 5;
-                        int origemY = origem.CoordenadaY * pbMapa.Height / TAMANHOY + 3;
-                        int destinoX = destino.CoordenadaX * pbMapa.Width / TAMANHOX +3;
+                        int origemY = origem.CoordenadaY * pbMapa.Height / TAMANHOY + 5;
+                        int destinoX = destino.CoordenadaX * pbMapa.Width / TAMANHOX + 5;
                         int destinoY = destino.CoordenadaY * pbMapa.Height / TAMANHOY +5;
+                        AdjustableArrowCap flecha = new AdjustableArrowCap(5, 5);
 
 
-                        
-                        if (destinoX - origemX > 2 * pbMapa.Width / 4)
+                        if (destinoX - origemX > pbMapa.Width / 2)
                         {
                             g.DrawLine(pen, origemX, origemY, 0, origemY);
-                            pen.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
+                            pen.CustomEndCap = flecha;
                             g.DrawLine(pen, pbMapa.Width, origemY, destinoX, destinoY);
                         }
                         else
                         {
-                            pen.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
+                            pen.CustomEndCap = flecha;
                             g.DrawLine(pen, origemX,origemY, destinoX,  destinoY);
                         }
                     }

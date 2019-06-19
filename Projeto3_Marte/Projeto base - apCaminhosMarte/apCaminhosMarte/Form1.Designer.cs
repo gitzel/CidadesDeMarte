@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpRotas = new System.Windows.Forms.TabPage();
@@ -92,7 +92,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBuscar.Location = new System.Drawing.Point(1229, 17);
             this.btnBuscar.Name = "btnBuscar";
-            this.btnBuscar.Size = new System.Drawing.Size(120, 115);
+            this.btnBuscar.Size = new System.Drawing.Size(120, 116);
             this.btnBuscar.TabIndex = 11;
             this.btnBuscar.Text = "Buscar";
             this.btnBuscar.UseVisualStyleBackColor = true;
@@ -108,14 +108,14 @@
             this.dgvMelhorCaminho.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvMelhorCaminho.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvMelhorCaminho.ColumnHeadersVisible = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvMelhorCaminho.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvMelhorCaminho.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvMelhorCaminho.Location = new System.Drawing.Point(851, 499);
             this.dgvMelhorCaminho.Name = "dgvMelhorCaminho";
             this.dgvMelhorCaminho.ReadOnly = true;
@@ -184,7 +184,7 @@
             this.lsbDestino.ItemHeight = 16;
             this.lsbDestino.Location = new System.Drawing.Point(1037, 17);
             this.lsbDestino.Name = "lsbDestino";
-            this.lsbDestino.Size = new System.Drawing.Size(177, 100);
+            this.lsbDestino.Size = new System.Drawing.Size(177, 116);
             this.lsbDestino.TabIndex = 3;
             // 
             // label1
@@ -206,7 +206,7 @@
             this.lsbOrigem.ItemHeight = 16;
             this.lsbOrigem.Location = new System.Drawing.Point(851, 17);
             this.lsbOrigem.Name = "lsbOrigem";
-            this.lsbOrigem.Size = new System.Drawing.Size(177, 100);
+            this.lsbOrigem.Size = new System.Drawing.Size(177, 116);
             this.lsbOrigem.TabIndex = 1;
             // 
             // pbMapa
@@ -230,7 +230,7 @@
             this.tpArvore.Location = new System.Drawing.Point(4, 22);
             this.tpArvore.Name = "tpArvore";
             this.tpArvore.Padding = new System.Windows.Forms.Padding(3);
-            this.tpArvore.Size = new System.Drawing.Size(1359, 512);
+            this.tpArvore.Size = new System.Drawing.Size(1359, 527);
             this.tpArvore.TabIndex = 1;
             this.tpArvore.Text = "Árvore de Cidades";
             this.tpArvore.UseVisualStyleBackColor = true;
@@ -240,7 +240,7 @@
             this.pnlArvore.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlArvore.Location = new System.Drawing.Point(3, 3);
             this.pnlArvore.Name = "pnlArvore";
-            this.pnlArvore.Size = new System.Drawing.Size(1353, 506);
+            this.pnlArvore.Size = new System.Drawing.Size(1353, 521);
             this.pnlArvore.TabIndex = 0;
             this.pnlArvore.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlArvore_Paint);
             // 

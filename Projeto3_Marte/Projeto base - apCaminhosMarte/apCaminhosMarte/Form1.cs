@@ -59,20 +59,18 @@ namespace apCaminhosMarte
 
         /*
           Método que lê um arquivo de cidades escolhido pelo usuário e inclui cada uma delas na árvore. Instanciamos o grafo
-          com uma matriz de dimensões iguais a quantidade de cidades. Chamamo os métodos para ler os caminhos, carregar os dados no 
+          com uma matriz de dimensões iguais a quantidade de cidades. Chamamos os métodos para ler os caminhos, escolhido pelo usuário, carregar os dados no 
           listBox e chama o evento paint do mapa para desenhar pontos nas cidades. 
           @throws caso não consiga ler o arquivo.
         */
+
         private void LeituraDosArquivos()       
         {
             try
             {
-                if (dlgArquivo.ShowDialog() == DialogResult.OK)     
-                {
+                if (dlgArquivo.ShowDialog() == DialogResult.OK)
                     ConstruirArvore(new StreamReader(dlgArquivo.FileName, Encoding.Default, true));      
-
-                    
-                }
+                
 
                 dlgArquivo.Title = "Selecione o arquivo com os caminhos";
 
